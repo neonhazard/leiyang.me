@@ -26,7 +26,7 @@ export default function Tools() {
             AI Tools & <span className="text-purple-400">Agents</span>
           </h1>
           <p className="text-xl text-gray-300 text-center mb-12">
-            Personal tools and AI-powered solutions I've built
+            Personal tools and AI-powered solutions I&apos;ve built
           </p>
 
           {/* Tools Grid */}
