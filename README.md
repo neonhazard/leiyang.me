@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lei Yang - Personal Website
 
-## Getting Started
+A modern personal website built with Next.js, featuring portfolio, resume, and AI tools. Deployed on Vercel with custom domain support.
 
-First, run the development server:
+## 🌟 Features
 
+- **Portfolio Showcase** - Animation demos and creative projects
+- **Professional Resume** - Experience, skills, and education
+- **AI Tools & Agents** - Personal tools and AI-powered solutions
+- **Responsive Design** - Beautiful, mobile-friendly interface
+- **API Integration** - Backend services for AI tools
+- **Custom Domain** - Configured for leiyang.me
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
+- **Deployment**: Vercel
+- **Domain**: leiyang.me
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/neonhazard/leiyang.me.git
+cd leiyang.me
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## 📁 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+leiyang.me/
+├── src/
+│   ├── app/
+│   │   ├── portfolio/          # Animation portfolio page
+│   │   ├── resume/            # Resume and experience
+│   │   ├── tools/             # AI tools and agents
+│   │   ├── api/               # API routes
+│   │   └── page.tsx           # Homepage
+│   └── components/            # Reusable components
+├── public/                    # Static assets
+└── package.json
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🤖 AI Tools & APIs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Color Palette AI** - Generate harmonious color schemes
+- **Animation Assistant** - AI-powered animation suggestions
+- **Portfolio Generator** - Automated content creation
+- **Resume Analyzer** - AI resume optimization
 
-## Deploy on Vercel
+## 🌐 Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is automatically deployed to Vercel on every push to the main branch.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Custom Domain Setup
+1. Add your domain in Vercel dashboard
+2. Configure DNS settings
+3. SSL certificate is automatically provisioned
+
+## 🔄 Development Workflow
+
+1. **Code** with Cursor AI assistance
+2. **Commit** changes to Git
+3. **Push** to GitHub
+4. **Deploy** automatically via Vercel
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 📧 Contact
+
+- **Email**: neonhazard@gmail.com
+- **Website**: [leiyang.me](https://leiyang.me)
+- **GitHub**: [@neonhazard](https://github.com/neonhazard)
