@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { mood, style, colors } = await request.json();
+    const { mood, style } = await request.json();
     
     // Mock AI color palette generation
     // In a real implementation, you'd integrate with an AI service
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       generated_at: new Date().toISOString()
     });
     
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to generate color palette' },
       { status: 500 }

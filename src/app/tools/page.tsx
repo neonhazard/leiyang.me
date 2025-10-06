@@ -121,7 +121,7 @@ export default function Tools() {
               <div className="text-4xl mb-4">🚀</div>
               <h3 className="text-xl font-semibold text-gray-400 mb-2">More Tools Coming</h3>
               <p className="text-gray-500 text-sm mb-4">
-                I'm constantly building new AI-powered tools and agents
+                I&apos;m constantly building new AI-powered tools and agents
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
                 <span className="bg-gray-600/30 text-gray-400 px-2 py-1 rounded text-xs">Coming Soon</span>
