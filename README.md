@@ -84,6 +84,8 @@ This project is automatically deployed to Vercel on every push to the main branc
 3. **Push** to GitHub
 4. **Deploy** automatically via Vercel
 
+*Last updated: October 2024*
+
 ## 📝 License
 
 This project is open source and available under the [MIT License](LICENSE).
