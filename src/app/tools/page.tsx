@@ -65,22 +65,24 @@ export default function Tools() {
               </button>
             </div>
 
-            {/* Color Palette AI */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
-              <div className="text-4xl mb-4">🎨</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Color Palette AI</h3>
-              <p className="text-gray-300 text-sm mb-4">
-                Generates harmonious color palettes based on mood, style, or reference images
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="bg-purple-600/30 text-purple-300 px-2 py-1 rounded text-xs">AI</span>
-                <span className="bg-pink-600/30 text-pink-300 px-2 py-1 rounded text-xs">Design</span>
-                <span className="bg-green-600/30 text-green-300 px-2 py-1 rounded text-xs">ML</span>
+            {/* Purchasing Power Calculator */}
+            <Link href="/tools/purchasing-power" className="block">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
+                <div className="text-4xl mb-4">💰</div>
+                <h3 className="text-xl font-semibold text-white mb-2">Purchasing Power Calculator</h3>
+                <p className="text-gray-300 text-sm mb-4">
+                  Calculate how the value of money changes over time using official CPI data
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <span className="bg-purple-600/30 text-purple-300 px-2 py-1 rounded text-xs">Finance</span>
+                  <span className="bg-blue-600/30 text-blue-300 px-2 py-1 rounded text-xs">CPI Data</span>
+                  <span className="bg-green-600/30 text-green-300 px-2 py-1 rounded text-xs">API</span>
+                </div>
+                <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition-colors">
+                  Try It Out
+                </button>
               </div>
-              <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition-colors">
-                Try It Out
-              </button>
-            </div>
+            </Link>
 
             {/* Animation Timeline Optimizer */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
