@@ -121,7 +121,7 @@ export default function Resume() {
                     <p className="font-semibold">PROJECT: UNANNOUNCED MOVIE PROJECT</p>
                   </div>
                   <ul className="text-gray-300 text-sm space-y-1">
-                    <li>• Created Previz shots based on director's vision</li>
+                    <li>• Created Previz shots based on director&apos;s vision</li>
                     <li>• Created rigs, skinned mesh, and produced animations</li>
                   </ul>
                 </div>
@@ -156,7 +156,7 @@ export default function Resume() {
                     <p className="font-semibold">PROJECT: GUNS AND KIDNEYS</p>
                   </div>
                   <ul className="text-gray-300 text-sm space-y-1">
-                    <li>• Planned and executed VFX shots to the director's vision</li>
+                    <li>• Planned and executed VFX shots to the director&apos;s vision</li>
                     <li>• Managed VFX team for onsite data collection and back plate shots</li>
                     <li>• Supervised post production VFX shots</li>
                   </ul>
@@ -183,10 +183,10 @@ export default function Resume() {
                   <ul className="text-gray-300 text-sm space-y-1">
                     <li>• Contributed AI, cinematic, and vehicle animations across five major Call of Duty titles, from Call of Duty 2 through Infinite Warfare</li>
                     <li>• Vehicle rigging and skinning</li>
-                    <li>• Led development of dog "Riley" animation assets, a signature gameplay feature, collaborating with one other animator on design, creation, and implementation</li>
+                    <li>• Led development of dog &quot;Riley&quot; animation assets, a signature gameplay feature, collaborating with one other animator on design, creation, and implementation</li>
                     <li>• Drove the design and creation of snowmobile animation assets, ensuring gameplay integration and polish</li>
-                    <li>• Owned creation and implementation of animation assets for the level "The Coup," driving cinematic impact</li>
-                    <li>• Spearheaded the "Pointe Du Hoc" massive beach invasion scene for the E3 showcase, delivering a high-visibility feature under tight deadlines</li>
+                    <li>• Owned creation and implementation of animation assets for the level &quot;The Coup,&quot; driving cinematic impact</li>
+                    <li>• Spearheaded the &quot;Pointe Du Hoc&quot; massive beach invasion scene for the E3 showcase, delivering a high-visibility feature under tight deadlines</li>
                   </ul>
                 </div>
               </div>
