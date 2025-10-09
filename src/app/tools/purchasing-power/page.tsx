@@ -26,13 +26,42 @@ interface CalculationResult {
 
 interface Metadata {
   locations: Location[];
-  dateRange: {
-    min: number;
-    max: number;
-  };
+  dateRanges: Record<string, {min: number, max: number}>;
+  dataSources?: Record<string, string>;
 }
 
 export default function PurchasingPowerCalculator() {
+  // Add CSS for slider thumbs
+  const sliderStyles = `
+    .slider-thumb::-webkit-slider-thumb {
+      appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .slider-thumb::-moz-range-thumb {
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .slider-thumb::-webkit-slider-track {
+      background: transparent;
+    }
+    
+    .slider-thumb::-moz-range-track {
+      background: transparent;
+    }
+  `;
   const [amount, setAmount] = useState<string>('100');
   const [fromYear, setFromYear] = useState<number>(1990);
   const [toYear, setToYear] = useState<number>(new Date().getFullYear());
@@ -40,15 +69,51 @@ export default function PurchasingPowerCalculator() {
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [metadata, setMetadata] = useState<Metadata | null>(null);
+  // Hardcoded metadata for instant loading (no API calls needed)
+  const metadata: Metadata = {
+    locations: [
+      { id: 'US', name: 'US National Average' },
+      { id: 'NYC', name: 'New York-Newark-Jersey City' },
+      { id: 'LA', name: 'Los Angeles-Long Beach-Anaheim' },
+      { id: 'CHICAGO', name: 'Chicago-Naperville-Elgin' },
+      { id: 'HOUSTON', name: 'Houston-The Woodlands-Sugar Land' },
+      { id: 'PHOENIX', name: 'Phoenix-Mesa-Scottsdale' },
+      { id: 'PHILADELPHIA', name: 'Philadelphia-Camden-Wilmington' },
+      { id: 'SAN_DIEGO', name: 'San Diego-Carlsbad' },
+      { id: 'DALLAS', name: 'Dallas-Fort Worth-Arlington' }
+    ],
+    dateRanges: {
+      'US': { min: 1947, max: new Date().getFullYear() },
+      'NYC': { min: 1965, max: new Date().getFullYear() },
+      'LA': { min: 1965, max: new Date().getFullYear() },
+      'CHICAGO': { min: 1965, max: new Date().getFullYear() },
+      'HOUSTON': { min: 1965, max: new Date().getFullYear() },
+      'PHOENIX': { min: 1965, max: new Date().getFullYear() },
+      'PHILADELPHIA': { min: 1965, max: new Date().getFullYear() },
+      'SAN_DIEGO': { min: 1965, max: new Date().getFullYear() },
+      'DALLAS': { min: 1965, max: new Date().getFullYear() }
+    },
+    dataSources: {
+      'US': 'FRED (Federal Reserve Economic Data)',
+      'NYC': 'BLS (Bureau of Labor Statistics)',
+      'LA': 'BLS (Bureau of Labor Statistics)',
+      'CHICAGO': 'BLS (Bureau of Labor Statistics)',
+      'HOUSTON': 'BLS (Bureau of Labor Statistics)',
+      'PHOENIX': 'BLS (Bureau of Labor Statistics)',
+      'PHILADELPHIA': 'BLS (Bureau of Labor Statistics)',
+      'SAN_DIEGO': 'BLS (Bureau of Labor Statistics)',
+      'DALLAS': 'BLS (Bureau of Labor Statistics)'
+    }
+  };
 
-  // Fetch metadata on component mount
+  const [locationDateRange, setLocationDateRange] = useState<{min: number, max: number} | null>(null);
+
+  // Update date range when location changes (use hardcoded metadata)
   useEffect(() => {
-    fetch('/api/purchasing-power')
-      .then(res => res.json())
-      .then(data => setMetadata(data))
-      .catch(err => console.error('Failed to fetch metadata:', err));
-  }, []);
+    if (location && metadata.dateRanges) {
+      setLocationDateRange(metadata.dateRanges[location] || { min: 1913, max: new Date().getFullYear() });
+    }
+  }, [location, metadata.dateRanges]);
 
   const handleCalculate = async () => {
     setLoading(true);
@@ -102,6 +167,7 @@ export default function PurchasingPowerCalculator() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <style dangerouslySetInnerHTML={{ __html: sliderStyles }} />
       {/* Navigation */}
       <nav className="flex justify-between items-center p-6">
         <Link href="/" className="text-2xl font-bold text-white">Lei Yang</Link>
@@ -159,7 +225,7 @@ export default function PurchasingPowerCalculator() {
                   onChange={(e) => setLocation(e.target.value)}
                   className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
-                  {metadata?.locations.map((loc) => (
+                  {metadata.locations.map((loc) => (
                     <option key={loc.id} value={loc.id} className="bg-slate-800">
                       {loc.name}
                     </option>
@@ -167,40 +233,115 @@ export default function PurchasingPowerCalculator() {
                 </select>
               </div>
 
-              {/* From Year */}
-              <div>
-                <label className="block text-white font-semibold mb-2">
-                  From Year
-                </label>
-                <select
-                  value={fromYear}
-                  onChange={(e) => setFromYear(parseInt(e.target.value))}
-                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  {metadata && generateYearOptions(metadata.dateRange.min, metadata.dateRange.max).map((year) => (
-                    <option key={year} value={year} className="bg-slate-800">
-                      {year}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            </div>
 
-              {/* To Year */}
-              <div>
-                <label className="block text-white font-semibold mb-2">
-                  To Year
-                </label>
-                <select
-                  value={toYear}
-                  onChange={(e) => setToYear(parseInt(e.target.value))}
-                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  {metadata && generateYearOptions(metadata.dateRange.min, metadata.dateRange.max).map((year) => (
-                    <option key={year} value={year} className="bg-slate-800">
-                      {year}
-                    </option>
-                  ))}
-                </select>
+            {/* Year Range with Slider - Full Width */}
+            <div className="mt-6">
+              <label className="block text-white font-semibold mb-2">
+                Year Range
+              </label>
+              
+              {/* Available Data Range Info */}
+              {locationDateRange && (
+                <p className="text-gray-400 text-sm mb-3">
+                  Available data: {locationDateRange.min} - {locationDateRange.max}
+                </p>
+              )}
+              
+              {/* Visual Range Display */}
+              <div className="relative mb-6">
+                <div className="relative h-2 bg-gray-600 rounded-lg">
+                  {/* Background track */}
+                  <div className="absolute inset-0 h-2 bg-gray-600 rounded-lg"></div>
+                  
+                  {/* Active range track */}
+                  <div 
+                    className="absolute h-2 bg-purple-500 rounded-lg"
+                    style={{
+                      left: `${((fromYear - (locationDateRange?.min || 1913)) / ((locationDateRange?.max || new Date().getFullYear()) - (locationDateRange?.min || 1913))) * 100}%`,
+                      width: `${((toYear - fromYear) / ((locationDateRange?.max || new Date().getFullYear()) - (locationDateRange?.min || 1913))) * 100}%`
+                    }}
+                  />
+                  
+                  {/* From Year Handle */}
+                  <div
+                    className="absolute w-4 h-4 bg-purple-500 border-2 border-white rounded-full shadow-lg"
+                    style={{
+                      left: `${((fromYear - (locationDateRange?.min || 1913)) / ((locationDateRange?.max || new Date().getFullYear()) - (locationDateRange?.min || 1913))) * 100}%`,
+                      transform: 'translateX(-50%) translateY(-25%)',
+                      top: '50%'
+                    }}
+                  />
+                  
+                  {/* To Year Handle */}
+                  <div
+                    className="absolute w-4 h-4 bg-purple-500 border-2 border-white rounded-full shadow-lg"
+                    style={{
+                      left: `${((toYear - (locationDateRange?.min || 1913)) / ((locationDateRange?.max || new Date().getFullYear()) - (locationDateRange?.min || 1913))) * 100}%`,
+                      transform: 'translateX(-50%) translateY(-25%)',
+                      top: '50%'
+                    }}
+                  />
+                </div>
+                
+                {/* Slider Labels */}
+                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <span>{locationDateRange?.min || 1913}</span>
+                  <span className="text-white font-semibold">
+                    {fromYear} - {toYear}
+                  </span>
+                  <span>{locationDateRange?.max || new Date().getFullYear()}</span>
+                </div>
+              </div>
+              
+              {/* Year Dropdowns */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-300 text-sm mb-1">From Year</label>
+                  <select
+                    value={fromYear}
+                    onChange={(e) => {
+                      const newFromYear = parseInt(e.target.value);
+                      if (newFromYear <= toYear) {
+                        setFromYear(newFromYear);
+                      }
+                    }}
+                    className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  >
+                    {locationDateRange && generateYearOptions(locationDateRange.min, locationDateRange.max).map((year) => (
+                      <option key={year} value={year} className="bg-slate-800">
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-300 text-sm mb-1">To Year</label>
+                  <select
+                    value={toYear}
+                    onChange={(e) => {
+                      const newToYear = parseInt(e.target.value);
+                      if (newToYear >= fromYear) {
+                        setToYear(newToYear);
+                      }
+                    }}
+                    className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  >
+                    {locationDateRange && generateYearOptions(locationDateRange.min, locationDateRange.max).map((year) => (
+                      <option key={year} value={year} className="bg-slate-800">
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              {/* Selection Summary */}
+              <div className="mt-3 text-center">
+                <span className="text-gray-300 text-sm">
+                  {toYear - fromYear} year{toYear - fromYear !== 1 ? 's' : ''} selected
+                </span>
               </div>
             </div>
 
@@ -243,7 +384,7 @@ export default function PurchasingPowerCalculator() {
               {result.usingFallbackData && (
                 <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-4 mb-6">
                   <p className="text-blue-300 text-sm">
-                    <strong>Note:</strong> Regional CPI data for {metadata?.locations.find(l => l.id === result.location)?.name} is not available for the selected years. 
+                    <strong>Note:</strong> Regional CPI data for {metadata.locations.find(l => l.id === result.location)?.name} is not available for the selected years. 
                     Showing US National Average data instead.
                   </p>
                 </div>
@@ -275,7 +416,10 @@ export default function PurchasingPowerCalculator() {
                   <div className="bg-white/5 rounded-lg p-4">
                     <h3 className="text-white font-semibold mb-2">Location</h3>
                     <p className="text-gray-300">
-                      {metadata?.locations.find(l => l.id === result.location)?.name}
+                      {metadata.locations.find(l => l.id === result.location)?.name}
+                    </p>
+                    <p className="text-gray-400 text-sm mt-1">
+                      Data Source: {metadata.dataSources?.[result.location]}
                     </p>
                   </div>
                   
@@ -291,6 +435,19 @@ export default function PurchasingPowerCalculator() {
                         <p className="text-white font-semibold">{result.cpiData.toCPI}</p>
                       </div>
                     </div>
+                  </div>
+
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <h3 className="text-white font-semibold mb-2">Available Data Range</h3>
+         <p className="text-gray-300 text-sm">
+           {locationDateRange ? 
+             `Data available from ${locationDateRange.min} to ${locationDateRange.max}` :
+             'Date range information not available'
+           }
+         </p>
+                    <p className="text-gray-400 text-xs mt-1">
+                      Note: Date ranges may vary by location and data source
+                    </p>
                   </div>
                 </div>
               </div>

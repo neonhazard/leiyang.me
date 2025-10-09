@@ -332,6 +332,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
+
 // GET endpoint to fetch available locations and date ranges
 export async function GET() {
   try {
@@ -346,14 +347,36 @@ export async function GET() {
             key === 'PHILADELPHIA' ? 'Philadelphia-Camden-Wilmington' :
             key === 'SAN_DIEGO' ? 'San Diego-Carlsbad' :
             key === 'DALLAS' ? 'Dallas-Fort Worth-Arlington' :
-            key.replace(/_/g, ' ')
+            key.replace(/_/g, ' '),
+      seriesId: CPI_SERIES[key as keyof typeof CPI_SERIES]
     }));
+
+    // Confirmed start years from BLS API queries (all regional cities start in 1965)
+    const locationDateRanges: Record<string, {min: number, max: number}> = {
+      'US': { min: 1947, max: new Date().getFullYear() }, // FRED US National Average
+      'NYC': { min: 1965, max: new Date().getFullYear() }, // BLS New York-Newark-Jersey City
+      'LA': { min: 1965, max: new Date().getFullYear() }, // BLS Los Angeles-Long Beach-Anaheim
+      'CHICAGO': { min: 1965, max: new Date().getFullYear() }, // BLS Chicago-Naperville-Elgin
+      'HOUSTON': { min: 1965, max: new Date().getFullYear() }, // BLS Houston-The Woodlands-Sugar Land
+      'PHOENIX': { min: 1965, max: new Date().getFullYear() }, // BLS Phoenix-Mesa-Scottsdale
+      'PHILADELPHIA': { min: 1965, max: new Date().getFullYear() }, // BLS Philadelphia-Camden-Wilmington
+      'SAN_DIEGO': { min: 1965, max: new Date().getFullYear() }, // BLS San Diego-Carlsbad
+      'DALLAS': { min: 1965, max: new Date().getFullYear() } // BLS Dallas-Fort Worth-Arlington
+    };
 
     return NextResponse.json({
       locations,
-      dateRange: {
-        min: 1913,
-        max: new Date().getFullYear()
+      dateRanges: locationDateRanges,
+      dataSources: {
+        'US': 'FRED (Federal Reserve Economic Data)',
+        'NYC': 'BLS (Bureau of Labor Statistics)',
+        'LA': 'BLS (Bureau of Labor Statistics)',
+        'CHICAGO': 'BLS (Bureau of Labor Statistics)',
+        'HOUSTON': 'BLS (Bureau of Labor Statistics)',
+        'PHOENIX': 'BLS (Bureau of Labor Statistics)',
+        'PHILADELPHIA': 'BLS (Bureau of Labor Statistics)',
+        'SAN_DIEGO': 'BLS (Bureau of Labor Statistics)',
+        'DALLAS': 'BLS (Bureau of Labor Statistics)'
       }
     });
 
