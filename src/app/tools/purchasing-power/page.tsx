@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-interface Location {
-  id: string;
-  name: string;
-}
+import { PURCHASING_POWER_METADATA } from '@/constants/purchasing-power';
+import { formatNumberWithCommas, getNumericValue, formatCurrency, generateYearOptions } from '@/utils/formatting';
+import { calculateSliderPosition, calculateRangeWidth } from '@/utils/slider';
+import '@/styles/slider.css';
 
 interface CalculationResult {
   originalAmount: number;
@@ -24,44 +23,7 @@ interface CalculationResult {
   actualLocation?: string;
 }
 
-interface Metadata {
-  locations: Location[];
-  dateRanges: Record<string, {min: number, max: number}>;
-  dataSources?: Record<string, string>;
-}
-
 export default function PurchasingPowerCalculator() {
-  // Add CSS for slider thumbs
-  const sliderStyles = `
-    .slider-thumb::-webkit-slider-thumb {
-      appearance: none;
-      height: 20px;
-      width: 20px;
-      border-radius: 50%;
-      background: #8b5cf6;
-      cursor: pointer;
-      border: 2px solid #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-    
-    .slider-thumb::-moz-range-thumb {
-      height: 20px;
-      width: 20px;
-      border-radius: 50%;
-      background: #8b5cf6;
-      cursor: pointer;
-      border: 2px solid #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-    
-    .slider-thumb::-webkit-slider-track {
-      background: transparent;
-    }
-    
-    .slider-thumb::-moz-range-track {
-      background: transparent;
-    }
-  `;
   const [amount, setAmount] = useState<string>('10000');
   const [displayAmount, setDisplayAmount] = useState<string>('10,000');
   const [fromYear, setFromYear] = useState<number>(1990);
@@ -70,76 +32,11 @@ export default function PurchasingPowerCalculator() {
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  // Hardcoded metadata for instant loading (no API calls needed)
-  const metadata: Metadata = {
-    locations: [
-      { id: 'US', name: 'US National Average' },
-      { id: 'NYC', name: 'New York-Newark-Jersey City' },
-      { id: 'LA', name: 'Los Angeles-Long Beach-Anaheim' },
-      { id: 'CHICAGO', name: 'Chicago-Naperville-Elgin' },
-      { id: 'HOUSTON', name: 'Houston-The Woodlands-Sugar Land' },
-      { id: 'PHOENIX', name: 'Phoenix-Mesa-Scottsdale' },
-      { id: 'PHILADELPHIA', name: 'Philadelphia-Camden-Wilmington' },
-      { id: 'SAN_DIEGO', name: 'San Diego-Carlsbad' },
-      { id: 'DALLAS', name: 'Dallas-Fort Worth-Arlington' }
-    ],
-    dateRanges: {
-      'US': { min: 1947, max: new Date().getFullYear() },
-      'NYC': { min: 1965, max: new Date().getFullYear() },
-      'LA': { min: 1965, max: new Date().getFullYear() },
-      'CHICAGO': { min: 1965, max: new Date().getFullYear() },
-      'HOUSTON': { min: 1965, max: new Date().getFullYear() },
-      'PHOENIX': { min: 1965, max: new Date().getFullYear() },
-      'PHILADELPHIA': { min: 1965, max: new Date().getFullYear() },
-      'SAN_DIEGO': { min: 1965, max: new Date().getFullYear() },
-      'DALLAS': { min: 1965, max: new Date().getFullYear() }
-    },
-    dataSources: {
-      'US': 'FRED (Federal Reserve Economic Data)',
-      'NYC': 'BLS (Bureau of Labor Statistics)',
-      'LA': 'BLS (Bureau of Labor Statistics)',
-      'CHICAGO': 'BLS (Bureau of Labor Statistics)',
-      'HOUSTON': 'BLS (Bureau of Labor Statistics)',
-      'PHOENIX': 'BLS (Bureau of Labor Statistics)',
-      'PHILADELPHIA': 'BLS (Bureau of Labor Statistics)',
-      'SAN_DIEGO': 'BLS (Bureau of Labor Statistics)',
-      'DALLAS': 'BLS (Bureau of Labor Statistics)'
-    }
-  };
+  
+  // Use imported metadata
+  const metadata = PURCHASING_POWER_METADATA;
 
   const [locationDateRange, setLocationDateRange] = useState<{min: number, max: number} | null>(null);
-
-  // Helper function to format number with commas
-  const formatNumberWithCommas = (value: string): string => {
-    // Handle empty string
-    if (!value) return '';
-    
-    // Remove all non-numeric characters except decimal point
-    const numericValue = value.replace(/[^\d.]/g, '');
-    
-    // Handle empty result after cleaning
-    if (!numericValue) return '';
-    
-    // Split by decimal point
-    const parts = numericValue.split('.');
-    
-    // Handle multiple decimal points (take only first two parts)
-    if (parts.length > 2) {
-      parts[1] = parts.slice(1).join('');
-    }
-    
-    // Format the integer part with commas
-    const integerPart = parts[0] || '0';
-    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    
-    // Return formatted number with decimal part if it exists
-    return parts.length > 1 ? `${formattedInteger}.${parts[1]}` : formattedInteger;
-  };
-
-  // Helper function to remove commas and get numeric value
-  const getNumericValue = (value: string): string => {
-    return value.replace(/,/g, '');
-  };
 
   // Handle amount input change
   const handleAmountChange = (value: string) => {
@@ -195,26 +92,9 @@ export default function PurchasingPowerCalculator() {
     }
   };
 
-  const generateYearOptions = (start: number, end: number) => {
-    const years = [];
-    for (let year = end; year >= start; year--) {
-      years.push(year);
-    }
-    return years;
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <style dangerouslySetInnerHTML={{ __html: sliderStyles }} />
       {/* Navigation */}
       <nav className="flex justify-between items-center p-6">
         <Link href="/" className="text-2xl font-bold text-white">Lei Yang</Link>
@@ -295,39 +175,49 @@ export default function PurchasingPowerCalculator() {
               
               {/* Visual Range Display */}
               <div className="relative mb-6">
-                <div className="relative h-2 bg-gray-600 rounded-lg">
-                  {/* Background track */}
-                  <div className="absolute inset-0 h-2 bg-gray-600 rounded-lg"></div>
+                {(() => {
+                  const minYear = locationDateRange?.min || 1913;
+                  const maxYear = locationDateRange?.max || new Date().getFullYear();
+                  const fromPosition = calculateSliderPosition(fromYear, minYear, maxYear);
+                  const toPosition = calculateSliderPosition(toYear, minYear, maxYear);
+                  const rangeWidth = calculateRangeWidth(fromYear, toYear, minYear, maxYear);
                   
-                  {/* Active range track */}
-                  <div 
-                    className="absolute h-2 bg-purple-500 rounded-lg"
-                    style={{
-                      left: `${((fromYear - (locationDateRange?.min || 1913)) / ((locationDateRange?.max || new Date().getFullYear()) - (locationDateRange?.min || 1913))) * 100}%`,
-                      width: `${((toYear - fromYear) / ((locationDateRange?.max || new Date().getFullYear()) - (locationDateRange?.min || 1913))) * 100}%`
-                    }}
-                  />
-                  
-                  {/* From Year Handle */}
-                  <div
-                    className="absolute w-4 h-4 bg-purple-500 border-2 border-white rounded-full shadow-lg"
-                    style={{
-                      left: `${((fromYear - (locationDateRange?.min || 1913)) / ((locationDateRange?.max || new Date().getFullYear()) - (locationDateRange?.min || 1913))) * 100}%`,
-                      transform: 'translateX(-50%) translateY(-25%)',
-                      top: '50%'
-                    }}
-                  />
-                  
-                  {/* To Year Handle */}
-                  <div
-                    className="absolute w-4 h-4 bg-purple-500 border-2 border-white rounded-full shadow-lg"
-                    style={{
-                      left: `${((toYear - (locationDateRange?.min || 1913)) / ((locationDateRange?.max || new Date().getFullYear()) - (locationDateRange?.min || 1913))) * 100}%`,
-                      transform: 'translateX(-50%) translateY(-25%)',
-                      top: '50%'
-                    }}
-                  />
-                </div>
+                  return (
+                    <div className="relative h-2 bg-gray-600 rounded-lg">
+                      {/* Background track */}
+                      <div className="absolute inset-0 h-2 bg-gray-600 rounded-lg"></div>
+                      
+                      {/* Active range track */}
+                      <div 
+                        className="absolute h-2 bg-purple-500 rounded-lg"
+                        style={{
+                          left: `${fromPosition}%`,
+                          width: `${rangeWidth}%`
+                        }}
+                      />
+                      
+                      {/* From Year Handle */}
+                      <div
+                        className="absolute w-4 h-4 bg-purple-500 border-2 border-white rounded-full shadow-lg"
+                        style={{
+                          left: `${fromPosition}%`,
+                          transform: 'translateX(-50%) translateY(-25%)',
+                          top: '50%'
+                        }}
+                      />
+                      
+                      {/* To Year Handle */}
+                      <div
+                        className="absolute w-4 h-4 bg-purple-500 border-2 border-white rounded-full shadow-lg"
+                        style={{
+                          left: `${toPosition}%`,
+                          transform: 'translateX(-50%) translateY(-25%)',
+                          top: '50%'
+                        }}
+                      />
+                    </div>
+                  );
+                })()}
                 
                 {/* Slider Labels */}
                 <div className="flex justify-between text-xs text-gray-400 mt-1">
