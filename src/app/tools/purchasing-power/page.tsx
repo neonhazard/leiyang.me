@@ -62,7 +62,8 @@ export default function PurchasingPowerCalculator() {
       background: transparent;
     }
   `;
-  const [amount, setAmount] = useState<string>('100');
+  const [amount, setAmount] = useState<string>('10000');
+  const [displayAmount, setDisplayAmount] = useState<string>('10,000');
   const [fromYear, setFromYear] = useState<number>(1990);
   const [toYear, setToYear] = useState<number>(new Date().getFullYear());
   const [location, setLocation] = useState<string>('US');
@@ -108,12 +109,58 @@ export default function PurchasingPowerCalculator() {
 
   const [locationDateRange, setLocationDateRange] = useState<{min: number, max: number} | null>(null);
 
+  // Helper function to format number with commas
+  const formatNumberWithCommas = (value: string): string => {
+    // Handle empty string
+    if (!value) return '';
+    
+    // Remove all non-numeric characters except decimal point
+    const numericValue = value.replace(/[^\d.]/g, '');
+    
+    // Handle empty result after cleaning
+    if (!numericValue) return '';
+    
+    // Split by decimal point
+    const parts = numericValue.split('.');
+    
+    // Handle multiple decimal points (take only first two parts)
+    if (parts.length > 2) {
+      parts[1] = parts.slice(1).join('');
+    }
+    
+    // Format the integer part with commas
+    const integerPart = parts[0] || '0';
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    
+    // Return formatted number with decimal part if it exists
+    return parts.length > 1 ? `${formattedInteger}.${parts[1]}` : formattedInteger;
+  };
+
+  // Helper function to remove commas and get numeric value
+  const getNumericValue = (value: string): string => {
+    return value.replace(/,/g, '');
+  };
+
+  // Handle amount input change
+  const handleAmountChange = (value: string) => {
+    try {
+      const numericValue = getNumericValue(value);
+      setAmount(numericValue);
+      setDisplayAmount(formatNumberWithCommas(value));
+    } catch {
+      // If formatting fails, just set the raw value
+      setAmount(value);
+      setDisplayAmount(value);
+    }
+  };
+
   // Update date range when location changes (use hardcoded metadata)
   useEffect(() => {
     if (location && metadata.dateRanges) {
       setLocationDateRange(metadata.dateRanges[location] || { min: 1913, max: new Date().getFullYear() });
     }
-  }, [location, metadata.dateRanges]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   const handleCalculate = async () => {
     setLoading(true);
@@ -205,13 +252,11 @@ export default function PurchasingPowerCalculator() {
                   Amount
                 </label>
                 <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Enter amount"
-                  min="0.01"
-                  step="0.01"
+                  type="text"
+                  value={displayAmount}
+                  onChange={(e) => handleAmountChange(e.target.value)}
+                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 h-12"
+                  placeholder="Enter amount (e.g., 1,000,000)"
                 />
               </div>
 
@@ -223,7 +268,7 @@ export default function PurchasingPowerCalculator() {
                 <select
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 h-12"
                 >
                   {metadata.locations.map((loc) => (
                     <option key={loc.id} value={loc.id} className="bg-slate-800">
