@@ -4,8 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 
-// Get all portfolio images
-const portfolioImages = [
+// Portfolio images list
+const PORTFOLIO_IMAGES: readonly string[] = [
   "life_drawing_01.jpg",
   "life_drawing_02.jpg",
   "life_drawing_03.jpg",
@@ -24,61 +24,83 @@ const portfolioImages = [
   "animal_02.jpg",
 ];
 
+// Helper function to format image name for display
+const formatImageName = (imageName: string): string => {
+  return imageName.replace(/_/g, " ").replace(/\.jpg$/i, "");
+};
+
+// Helper function to get image path
+const getImagePath = (imageName: string): string => {
+  return `/images/portfolio/${imageName}`;
+};
+
 export default function Drawings() {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
 
-  const openModal = (image: string) => {
-    const index = portfolioImages.indexOf(image);
-    setCurrentIndex(index);
-    setSelectedImage(image);
-    document.body.style.overflow = "hidden"; // Prevent background scrolling
+  // Check if modal is open
+  const isModalOpen = currentIndex >= 0;
+  const selectedImage = isModalOpen ? PORTFOLIO_IMAGES[currentIndex] : null;
+
+  const openModal = (imageName: string) => {
+    const index = PORTFOLIO_IMAGES.indexOf(imageName);
+    if (index >= 0) {
+      setCurrentIndex(index);
+      if (typeof window !== "undefined") {
+        document.body.style.overflow = "hidden";
+      }
+    }
   };
 
   const closeModal = () => {
-    setSelectedImage(null);
     setCurrentIndex(-1);
-    document.body.style.overflow = "unset"; // Restore scrolling
+    if (typeof window !== "undefined") {
+      document.body.style.overflow = "unset";
+    }
+  };
+
+  // Unified navigation function
+  const navigateToIndex = (newIndex: number) => {
+    setCurrentIndex(newIndex);
   };
 
   const goToPrevious = () => {
-    if (currentIndex > 0) {
-      const newIndex = currentIndex - 1;
-      setCurrentIndex(newIndex);
-      setSelectedImage(portfolioImages[newIndex]);
-    } else {
-      // Loop to last image
-      const newIndex = portfolioImages.length - 1;
-      setCurrentIndex(newIndex);
-      setSelectedImage(portfolioImages[newIndex]);
-    }
+    const newIndex = currentIndex > 0 
+      ? currentIndex - 1 
+      : PORTFOLIO_IMAGES.length - 1;
+    navigateToIndex(newIndex);
   };
 
   const goToNext = () => {
-    if (currentIndex < portfolioImages.length - 1) {
-      const newIndex = currentIndex + 1;
-      setCurrentIndex(newIndex);
-      setSelectedImage(portfolioImages[newIndex]);
-    } else {
-      // Loop to first image
-      setCurrentIndex(0);
-      setSelectedImage(portfolioImages[0]);
-    }
+    const newIndex = currentIndex < PORTFOLIO_IMAGES.length - 1 
+      ? currentIndex + 1 
+      : 0;
+    navigateToIndex(newIndex);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Navigation */}
       <nav className="flex justify-between items-center p-6">
-        <Link href="/" className="text-2xl font-bold text-white">Lei Yang</Link>
+        <Link href="/" className="text-2xl font-bold text-white">
+          Lei Yang
+        </Link>
         <div className="hidden md:flex space-x-8">
-          <Link href="/portfolio" className="text-purple-400 hover:text-white transition-colors">
+          <Link 
+            href="/portfolio" 
+            className="text-purple-400 hover:text-white transition-colors"
+          >
             Portfolio
           </Link>
-          <Link href="/resume" className="text-gray-300 hover:text-white transition-colors">
+          <Link 
+            href="/resume" 
+            className="text-gray-300 hover:text-white transition-colors"
+          >
             Resume
           </Link>
-          <Link href="/tools" className="text-gray-300 hover:text-white transition-colors">
+          <Link 
+            href="/tools" 
+            className="text-gray-300 hover:text-white transition-colors"
+          >
             Tools & AI
           </Link>
         </div>
@@ -104,7 +126,7 @@ export default function Drawings() {
 
           {/* Image Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {portfolioImages.map((image, index) => (
+            {PORTFOLIO_IMAGES.map((image, index) => (
               <div
                 key={image}
                 className="group bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer"
@@ -112,8 +134,8 @@ export default function Drawings() {
               >
                 <div className="relative aspect-[4/3] w-full bg-gray-800">
                   <Image
-                    src={`/images/portfolio/${image}`}
-                    alt={`Drawing ${index + 1}`}
+                    src={getImagePath(image)}
+                    alt={`${formatImageName(image)} - Drawing ${index + 1}`}
                     fill
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -121,7 +143,7 @@ export default function Drawings() {
                 </div>
                 <div className="p-4">
                   <h3 className="text-white font-semibold capitalize">
-                    {image.replace(/_/g, " ").replace(/\.jpg$/i, "")}
+                    {formatImageName(image)}
                   </h3>
                 </div>
               </div>
@@ -141,15 +163,18 @@ export default function Drawings() {
       </main>
 
       {/* Modal for full-size image */}
-      {selectedImage && (
+      {isModalOpen && selectedImage && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
           onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image gallery modal"
         >
           {/* Close button */}
           <button
             onClick={closeModal}
-            className="absolute top-4 right-4 text-white hover:text-purple-400 transition-colors text-4xl font-bold z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
+            className="absolute top-4 right-4 text-white hover:text-purple-400 transition-colors text-4xl font-bold z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
             aria-label="Close modal"
           >
             ×
@@ -180,8 +205,12 @@ export default function Drawings() {
           </button>
 
           {/* Image counter */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white bg-black/50 rounded-full px-4 py-2 z-10">
-            {currentIndex + 1} / {portfolioImages.length}
+          <div 
+            className="absolute top-4 left-1/2 -translate-x-1/2 text-white bg-black/50 rounded-full px-4 py-2 z-10"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {currentIndex + 1} / {PORTFOLIO_IMAGES.length}
           </div>
 
           {/* Image container */}
@@ -190,8 +219,8 @@ export default function Drawings() {
             onClick={(e) => e.stopPropagation()}
           >
             <Image
-              src={`/images/portfolio/${selectedImage}`}
-              alt={`Full size ${selectedImage.replace(/_/g, " ").replace(/\.jpg$/i, "")}`}
+              src={getImagePath(selectedImage)}
+              alt={`Full size ${formatImageName(selectedImage)}`}
               width={1920}
               height={1080}
               className="object-contain max-w-full max-h-[90vh] w-auto h-auto"
