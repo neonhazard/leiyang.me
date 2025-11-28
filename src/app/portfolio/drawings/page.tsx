@@ -26,15 +26,44 @@ const portfolioImages = [
 
 export default function Drawings() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
 
   const openModal = (image: string) => {
+    const index = portfolioImages.indexOf(image);
+    setCurrentIndex(index);
     setSelectedImage(image);
     document.body.style.overflow = "hidden"; // Prevent background scrolling
   };
 
   const closeModal = () => {
     setSelectedImage(null);
+    setCurrentIndex(-1);
     document.body.style.overflow = "unset"; // Restore scrolling
+  };
+
+  const goToPrevious = () => {
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      setSelectedImage(portfolioImages[newIndex]);
+    } else {
+      // Loop to last image
+      const newIndex = portfolioImages.length - 1;
+      setCurrentIndex(newIndex);
+      setSelectedImage(portfolioImages[newIndex]);
+    }
+  };
+
+  const goToNext = () => {
+    if (currentIndex < portfolioImages.length - 1) {
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      setSelectedImage(portfolioImages[newIndex]);
+    } else {
+      // Loop to first image
+      setCurrentIndex(0);
+      setSelectedImage(portfolioImages[0]);
+    }
   };
 
   return (
@@ -117,6 +146,7 @@ export default function Drawings() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
           onClick={closeModal}
         >
+          {/* Close button */}
           <button
             onClick={closeModal}
             className="absolute top-4 right-4 text-white hover:text-purple-400 transition-colors text-4xl font-bold z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
@@ -124,6 +154,37 @@ export default function Drawings() {
           >
             ×
           </button>
+
+          {/* Left arrow */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              goToPrevious();
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-purple-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
+            aria-label="Previous image"
+          >
+            ←
+          </button>
+
+          {/* Right arrow */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              goToNext();
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-purple-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
+            aria-label="Next image"
+          >
+            →
+          </button>
+
+          {/* Image counter */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white bg-black/50 rounded-full px-4 py-2 z-10">
+            {currentIndex + 1} / {portfolioImages.length}
+          </div>
+
+          {/* Image container */}
           <div
             className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
