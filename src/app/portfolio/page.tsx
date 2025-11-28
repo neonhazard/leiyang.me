@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Portfolio() {
   return (
@@ -40,13 +41,25 @@ export default function Portfolio() {
               <p className="text-gray-300 text-sm">3D character animation showcase</p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
-              <div className="aspect-video bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
-                <span className="text-gray-400">🎨 Motion Graphics</span>
+            <Link 
+              href="/portfolio/drawings" 
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 block hover:scale-105 cursor-pointer"
+            >
+              <div className="aspect-video bg-gray-700 rounded-lg mb-4 overflow-hidden relative">
+                <Image
+                  src="/images/portfolio/life_drawing_01.jpg"
+                  alt="2D Art Preview"
+                  fill
+                  className="object-cover pointer-events-none"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
+                  <span className="text-white text-2xl">🎨</span>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Motion Graphics</h3>
-              <p className="text-gray-300 text-sm">2D motion graphics and visual effects</p>
-            </div>
+              <h3 className="text-xl font-semibold text-white mb-2">2D Art</h3>
+              <p className="text-gray-300 text-sm">Life drawings, still life, and animal studies</p>
+            </Link>
 
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
               <div className="aspect-video bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
