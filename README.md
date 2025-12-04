@@ -13,7 +13,7 @@ A modern personal website built with Next.js, featuring portfolio, resume, and A
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 16 with App Router
 - **Styling**: Tailwind CSS
 - **Language**: TypeScript
 - **Deployment**: Vercel
@@ -22,7 +22,7 @@ A modern personal website built with Next.js, featuring portfolio, resume, and A
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 20.9+ (required for Next.js 16) 
 - npm or yarn
 
 ### Installation
@@ -84,7 +84,7 @@ This project is automatically deployed to Vercel on every push to the main branc
 3. **Push** to GitHub
 4. **Deploy** automatically via Vercel
 
-*Last updated: October 2024*
+*Last updated: January 2025*
 
 ## 📝 License
 

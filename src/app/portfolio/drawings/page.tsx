@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Portfolio images list
 const PORTFOLIO_IMAGES: readonly string[] = [
@@ -41,21 +41,30 @@ export default function Drawings() {
   const isModalOpen = currentIndex >= 0;
   const selectedImage = isModalOpen ? PORTFOLIO_IMAGES[currentIndex] : null;
 
+  // Handle body overflow when modal opens/closes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (isModalOpen) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "unset";
+      }
+      // Cleanup function
+      return () => {
+        document.body.style.overflow = "unset";
+      };
+    }
+  }, [isModalOpen]);
+
   const openModal = (imageName: string) => {
     const index = PORTFOLIO_IMAGES.indexOf(imageName);
     if (index >= 0) {
       setCurrentIndex(index);
-      if (typeof window !== "undefined") {
-        document.body.style.overflow = "hidden";
-      }
     }
   };
 
   const closeModal = () => {
     setCurrentIndex(-1);
-    if (typeof window !== "undefined") {
-      document.body.style.overflow = "unset";
-    }
   };
 
   // Unified navigation function
