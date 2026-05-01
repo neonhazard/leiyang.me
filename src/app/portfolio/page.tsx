@@ -24,26 +24,28 @@ export default function Portfolio() {
       <main className="container mx-auto px-6 py-12">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-center">
-            Animation <span className="text-purple-400">Portfolio</span>
+            <span className="text-purple-400">Portfolio</span>
           </h1>
           <p className="text-xl text-gray-300 text-center mb-12">
             A showcase of my animation work and creative projects
           </p>
 
-          {/* Portfolio Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Placeholder for animation demos */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
+          {/* Portfolio Grid: centers any number of cards (1, 2, 3+) and wraps cleanly */}
+          <div className="flex flex-wrap justify-center gap-8">
+            <Link
+              href="/portfolio/game-animation"
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 block hover:scale-105 cursor-pointer w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]"
+            >
               <div className="aspect-video bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
-                <span className="text-gray-400">🎬 Demo Reel 1</span>
+                <span className="text-gray-400">🎮 Game Animation</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Character Animation</h3>
-              <p className="text-gray-300 text-sm">3D character animation showcase</p>
-            </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Game Animation</h3>
+              <p className="text-gray-300 text-sm">Demo reel and interactive character animations</p>
+            </Link>
 
-            <Link 
-              href="/portfolio/drawings" 
-              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 block hover:scale-105 cursor-pointer"
+            <Link
+              href="/portfolio/drawings"
+              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 block hover:scale-105 cursor-pointer w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]"
             >
               <div className="aspect-video bg-gray-700 rounded-lg mb-4 overflow-hidden relative">
                 <Image
@@ -60,38 +62,6 @@ export default function Portfolio() {
               <h3 className="text-xl font-semibold text-white mb-2">2D Art</h3>
               <p className="text-gray-300 text-sm">Life drawings, still life, and animal studies</p>
             </Link>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
-              <div className="aspect-video bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
-                <span className="text-gray-400">🎭 Storytelling</span>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Narrative Animation</h3>
-              <p className="text-gray-300 text-sm">Short films and storytelling projects</p>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
-              <div className="aspect-video bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
-                <span className="text-gray-400">🎮 Game Animation</span>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Game Animation</h3>
-              <p className="text-gray-300 text-sm">Interactive character animations</p>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
-              <div className="aspect-video bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
-                <span className="text-gray-400">🎪 Experimental</span>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Experimental Work</h3>
-              <p className="text-gray-300 text-sm">Creative and experimental animations</p>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
-              <div className="aspect-video bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
-                <span className="text-gray-400">📱 UI Animation</span>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">UI/UX Animation</h3>
-              <p className="text-gray-300 text-sm">Interface and user experience animations</p>
-            </div>
           </div>
 
           {/* Call to Action */}
