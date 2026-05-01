@@ -24,12 +24,10 @@ const PORTFOLIO_IMAGES: readonly string[] = [
   "animal_02.jpg",
 ];
 
-// Helper function to format image name for display
 const formatImageName = (imageName: string): string => {
   return imageName.replace(/_/g, " ").replace(/\.jpg$/i, "");
 };
 
-// Helper function to get image path
 const getImagePath = (imageName: string): string => {
   return `/images/portfolio/${imageName}`;
 };
@@ -37,11 +35,9 @@ const getImagePath = (imageName: string): string => {
 export default function Drawings() {
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
 
-  // Check if modal is open
   const isModalOpen = currentIndex >= 0;
   const selectedImage = isModalOpen ? PORTFOLIO_IMAGES[currentIndex] : null;
 
-  // Handle body overflow when modal opens/closes
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (isModalOpen) {
@@ -49,7 +45,6 @@ export default function Drawings() {
       } else {
         document.body.style.overflow = "unset";
       }
-      // Cleanup function
       return () => {
         document.body.style.overflow = "unset";
       };
@@ -67,48 +62,47 @@ export default function Drawings() {
     setCurrentIndex(-1);
   };
 
-  // Unified navigation function
   const navigateToIndex = (newIndex: number) => {
     setCurrentIndex(newIndex);
   };
 
   const goToPrevious = () => {
-    const newIndex = currentIndex > 0 
-      ? currentIndex - 1 
+    const newIndex = currentIndex > 0
+      ? currentIndex - 1
       : PORTFOLIO_IMAGES.length - 1;
     navigateToIndex(newIndex);
   };
 
   const goToNext = () => {
-    const newIndex = currentIndex < PORTFOLIO_IMAGES.length - 1 
-      ? currentIndex + 1 
+    const newIndex = currentIndex < PORTFOLIO_IMAGES.length - 1
+      ? currentIndex + 1
       : 0;
     navigateToIndex(newIndex);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-page">
       {/* Navigation */}
       <nav className="flex justify-between items-center p-6">
-        <Link href="/" className="text-2xl font-bold text-white">
+        <Link href="/" className="font-display text-2xl font-medium text-fg tracking-tight">
           Lei Yang
         </Link>
         <div className="hidden md:flex space-x-8">
-          <Link 
-            href="/portfolio" 
-            className="text-purple-400 hover:text-white transition-colors"
+          <Link
+            href="/portfolio"
+            className="text-accent hover:text-fg transition-colors"
           >
             Portfolio
           </Link>
-          <Link 
-            href="/resume" 
-            className="text-gray-300 hover:text-white transition-colors"
+          <Link
+            href="/resume"
+            className="text-muted hover:text-fg transition-colors"
           >
             Resume
           </Link>
-          <Link 
-            href="/tools" 
-            className="text-gray-300 hover:text-white transition-colors"
+          <Link
+            href="/tools"
+            className="text-muted hover:text-fg transition-colors"
           >
             Tools & AI
           </Link>
@@ -119,16 +113,16 @@ export default function Drawings() {
       <main className="container mx-auto px-6 py-12">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <Link 
-              href="/portfolio" 
-              className="text-purple-400 hover:text-white transition-colors inline-flex items-center mb-4"
+            <Link
+              href="/portfolio"
+              className="text-accent hover:text-fg transition-colors inline-flex items-center mb-4"
             >
               ← Back to Portfolio
             </Link>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-              2D Art <span className="text-purple-400">Gallery</span>
+            <h1 className="font-display text-4xl md:text-6xl font-medium text-fg tracking-tight mb-4">
+              2D Art <span className="text-accent">Gallery</span>
             </h1>
-            <p className="text-xl text-gray-300">
+            <p className="text-xl text-muted">
               A collection of life drawings, still life, and animal studies
             </p>
           </div>
@@ -138,10 +132,10 @@ export default function Drawings() {
             {PORTFOLIO_IMAGES.map((image, index) => (
               <div
                 key={image}
-                className="group bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer"
+                className="group bg-surface border border-rule rounded-xl overflow-hidden hover:border-accent transition-colors duration-300 hover:scale-105 cursor-pointer"
                 onClick={() => openModal(image)}
               >
-                <div className="relative aspect-[4/3] w-full bg-gray-800">
+                <div className="relative aspect-[4/3] w-full bg-elevated">
                   <Image
                     src={getImagePath(image)}
                     alt={`${formatImageName(image)} - Drawing ${index + 1}`}
@@ -151,7 +145,7 @@ export default function Drawings() {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-white font-semibold capitalize">
+                  <h3 className="text-fg font-semibold capitalize">
                     {formatImageName(image)}
                   </h3>
                 </div>
@@ -163,7 +157,7 @@ export default function Drawings() {
           <div className="text-center mt-12">
             <Link
               href="/portfolio"
-              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
+              className="bg-accent hover:bg-accent-hover text-page hover:text-fg px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
             >
               Back to Portfolio
             </Link>
@@ -183,7 +177,7 @@ export default function Drawings() {
           {/* Close button */}
           <button
             onClick={closeModal}
-            className="absolute top-4 right-4 text-white hover:text-purple-400 transition-colors text-4xl font-bold z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
+            className="absolute top-4 right-4 text-fg hover:text-accent transition-colors text-4xl font-bold z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
             aria-label="Close modal"
           >
             ×
@@ -195,7 +189,7 @@ export default function Drawings() {
               e.stopPropagation();
               goToPrevious();
             }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-purple-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-fg hover:text-accent transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
             aria-label="Previous image"
           >
             ←
@@ -207,15 +201,15 @@ export default function Drawings() {
               e.stopPropagation();
               goToNext();
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-purple-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-fg hover:text-accent transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
             aria-label="Next image"
           >
             →
           </button>
 
           {/* Image counter */}
-          <div 
-            className="absolute top-4 left-1/2 -translate-x-1/2 text-white bg-black/50 rounded-full px-4 py-2 z-10"
+          <div
+            className="absolute top-4 left-1/2 -translate-x-1/2 text-fg bg-black/50 rounded-full px-4 py-2 z-10"
             aria-live="polite"
             aria-atomic="true"
           >

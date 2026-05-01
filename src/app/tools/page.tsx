@@ -2,18 +2,18 @@ import Link from "next/link";
 
 export default function Tools() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="theme-lab min-h-screen bg-page">
       {/* Navigation */}
       <nav className="flex justify-between items-center p-6">
-        <Link href="/" className="text-2xl font-bold text-white">Lei Yang</Link>
+        <Link href="/" className="font-display text-2xl font-medium text-fg tracking-tight">Lei Yang</Link>
         <div className="hidden md:flex space-x-8">
-          <Link href="/portfolio" className="text-gray-300 hover:text-white transition-colors">
+          <Link href="/portfolio" className="text-muted hover:text-fg transition-colors">
             Portfolio
           </Link>
-          <Link href="/resume" className="text-gray-300 hover:text-white transition-colors">
+          <Link href="/resume" className="text-muted hover:text-fg transition-colors">
             Resume
           </Link>
-          <Link href="/tools" className="text-purple-400 hover:text-white transition-colors">
+          <Link href="/tools" className="text-accent hover:text-fg transition-colors">
             Tools & AI
           </Link>
         </div>
@@ -22,10 +22,10 @@ export default function Tools() {
       {/* Tools Header */}
       <main className="container mx-auto px-6 py-12">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-center">
-            AI Tools & <span className="text-purple-400">Agents</span>
+          <h1 className="font-mono text-4xl md:text-6xl font-medium text-fg tracking-tight mb-6 text-center">
+            AI Tools & <span className="text-accent">Agents</span>
           </h1>
-          <p className="text-xl text-gray-300 text-center mb-12">
+          <p className="text-xl text-muted text-center mb-12">
             Personal tools and AI-powered solutions I&apos;ve built
           </p>
 
@@ -36,18 +36,18 @@ export default function Tools() {
               href="/tools/purchasing-power"
               className="block w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]"
             >
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 h-full">
+              <div className="bg-surface border border-rule rounded-xl p-6 hover:border-accent transition-colors duration-300 h-full">
                 <div className="text-4xl mb-4">💰</div>
-                <h3 className="text-xl font-semibold text-white mb-2">Purchasing Power Calculator</h3>
-                <p className="text-gray-300 text-sm mb-4">
+                <h3 className="text-xl font-semibold text-fg mb-2">Purchasing Power Calculator</h3>
+                <p className="text-muted text-sm mb-4">
                   Calculate how the value of money changes over time using official CPI data
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="bg-purple-600/30 text-purple-300 px-2 py-1 rounded text-xs">Finance</span>
-                  <span className="bg-blue-600/30 text-blue-300 px-2 py-1 rounded text-xs">CPI Data</span>
-                  <span className="bg-green-600/30 text-green-300 px-2 py-1 rounded text-xs">API</span>
+                  <span className="bg-elevated text-muted border border-rule px-2 py-1 rounded font-mono text-xs uppercase tracking-wider">Finance</span>
+                  <span className="bg-elevated text-muted border border-rule px-2 py-1 rounded font-mono text-xs uppercase tracking-wider">CPI Data</span>
+                  <span className="bg-elevated text-muted border border-rule px-2 py-1 rounded font-mono text-xs uppercase tracking-wider">API</span>
                 </div>
-                <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition-colors">
+                <button className="w-full bg-accent hover:bg-accent-hover text-page py-2 rounded-lg transition-colors font-semibold">
                   Try It Out
                 </button>
               </div>

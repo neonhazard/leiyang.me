@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
+/*
+ * Cinema Warm — global default theme.
+ * Editorial dark surface, bone serif text, single amber accent.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --page: #0e0c0a;
+  --surface: #1a1714;
+  --elevated: #221e18;
+  --rule: #2a241e;
+  --fg: #efe6d6;
+  --muted: #9a8f7c;
+  --accent: #e8a33d;
+  --accent-hover: #c84b31;
+}
+
+/*
+ * Motion Lab — opt-in theme for /tools pages.
+ * Calibrated dark, monospace headings, signal-cyan accent.
+ * Apply to a wrapper element via className="theme-lab".
+ */
+.theme-lab {
+  --page: #0f1115;
+  --surface: #181b22;
+  --elevated: #1f232c;
+  --rule: #262a33;
+  --fg: #e6e8ec;
+  --muted: #8089a0;
+  --accent: #5ae0cc;
+  --accent-hover: #3fc2a8;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+  --color-rule: var(--rule);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-fraunces);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--page);
+  color: var(--fg);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
