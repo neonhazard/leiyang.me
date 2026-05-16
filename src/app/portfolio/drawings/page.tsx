@@ -3,8 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import Masthead from "@/components/Masthead";
 
-// Portfolio images list
 const PORTFOLIO_IMAGES: readonly string[] = [
   "life_drawing_01.jpg",
   "life_drawing_02.jpg",
@@ -24,13 +24,11 @@ const PORTFOLIO_IMAGES: readonly string[] = [
   "animal_02.jpg",
 ];
 
-const formatImageName = (imageName: string): string => {
-  return imageName.replace(/_/g, " ").replace(/\.jpg$/i, "");
-};
+const formatImageName = (imageName: string): string =>
+  imageName.replace(/_/g, " ").replace(/\.jpg$/i, "");
 
-const getImagePath = (imageName: string): string => {
-  return `/images/portfolio/${imageName}`;
-};
+const getImagePath = (imageName: string): string =>
+  `/images/portfolio/${imageName}`;
 
 export default function Drawings() {
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
@@ -40,183 +38,193 @@ export default function Drawings() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      if (isModalOpen) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "unset";
-      }
-      return () => {
-        document.body.style.overflow = "unset";
-      };
+      document.body.style.overflow = isModalOpen ? "hidden" : "unset";
+      return () => { document.body.style.overflow = "unset"; };
     }
   }, [isModalOpen]);
 
   const openModal = (imageName: string) => {
     const index = PORTFOLIO_IMAGES.indexOf(imageName);
-    if (index >= 0) {
-      setCurrentIndex(index);
-    }
+    if (index >= 0) setCurrentIndex(index);
   };
 
-  const closeModal = () => {
-    setCurrentIndex(-1);
-  };
+  const closeModal = () => setCurrentIndex(-1);
 
-  const navigateToIndex = (newIndex: number) => {
-    setCurrentIndex(newIndex);
-  };
+  const goToPrevious = () =>
+    setCurrentIndex(currentIndex > 0 ? currentIndex - 1 : PORTFOLIO_IMAGES.length - 1);
 
-  const goToPrevious = () => {
-    const newIndex = currentIndex > 0
-      ? currentIndex - 1
-      : PORTFOLIO_IMAGES.length - 1;
-    navigateToIndex(newIndex);
-  };
-
-  const goToNext = () => {
-    const newIndex = currentIndex < PORTFOLIO_IMAGES.length - 1
-      ? currentIndex + 1
-      : 0;
-    navigateToIndex(newIndex);
-  };
+  const goToNext = () =>
+    setCurrentIndex(currentIndex < PORTFOLIO_IMAGES.length - 1 ? currentIndex + 1 : 0);
 
   return (
     <div className="min-h-screen bg-page">
-      {/* Navigation */}
-      <nav className="flex justify-between items-center p-6">
-        <Link href="/" className="font-display text-2xl font-medium text-fg tracking-tight">
-          Lei Yang
-        </Link>
-        <div className="hidden md:flex space-x-8">
+      <Masthead />
+
+      <main className="shell py-16">
+        <div className="mb-8">
           <Link
-            href="/portfolio"
-            className="text-accent hover:text-fg transition-colors"
+            href="/#work"
+            style={{
+              fontFamily: "var(--font-space-mono), monospace",
+              fontSize: 11,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              marginBottom: 20,
+              transition: "letter-spacing .2s",
+            }}
           >
-            Portfolio
+            ← Back to My Work
           </Link>
-          <Link
-            href="/resume"
-            className="text-muted hover:text-fg transition-colors"
+          <h1
+            style={{
+              fontFamily: "var(--font-bricolage), sans-serif",
+              fontWeight: 600,
+              fontVariationSettings: '"opsz" 72',
+              fontSize: "clamp(40px, 6vw, 88px)",
+              lineHeight: 0.92,
+              letterSpacing: "-0.035em",
+              margin: "0 0 16px",
+              color: "var(--fg)",
+            }}
           >
-            Resume
-          </Link>
-          <Link
-            href="/tools"
-            className="text-muted hover:text-fg transition-colors"
-          >
-            Tools & AI
-          </Link>
+            2D <span style={{ fontFamily: "var(--font-bodoni), serif", fontStyle: "italic", color: "var(--accent)" }}>Art</span>
+          </h1>
+          <p style={{ color: "var(--muted)", fontSize: 18, fontWeight: 300 }}>
+            Life drawings, still life, and animal studies
+          </p>
         </div>
-      </nav>
 
-      {/* Drawings Header */}
-      <main className="container mx-auto px-6 py-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <Link
-              href="/portfolio"
-              className="text-accent hover:text-fg transition-colors inline-flex items-center mb-4"
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          style={{
+            borderTop: "1px solid var(--rule)",
+            borderLeft: "1px solid var(--rule)",
+          }}
+        >
+          {PORTFOLIO_IMAGES.map((image, index) => (
+            <div
+              key={image}
+              className="group cursor-pointer transition-colors duration-300"
+              style={{
+                borderRight: "1px solid var(--rule)",
+                borderBottom: "1px solid var(--rule)",
+              }}
+              onClick={() => openModal(image)}
             >
-              ← Back to Portfolio
-            </Link>
-            <h1 className="font-display text-4xl md:text-6xl font-medium text-fg tracking-tight mb-4">
-              2D Art <span className="text-accent">Gallery</span>
-            </h1>
-            <p className="text-xl text-muted">
-              A collection of life drawings, still life, and animal studies
-            </p>
-          </div>
-
-          {/* Image Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PORTFOLIO_IMAGES.map((image, index) => (
               <div
-                key={image}
-                className="group bg-surface border border-rule rounded-xl overflow-hidden hover:border-accent transition-colors duration-300 hover:scale-105 cursor-pointer"
-                onClick={() => openModal(image)}
+                className="relative overflow-hidden"
+                style={{ aspectRatio: "4/3", background: "var(--elevated)" }}
               >
-                <div className="relative aspect-[4/3] w-full bg-elevated">
-                  <Image
-                    src={getImagePath(image)}
-                    alt={`${formatImageName(image)} - Drawing ${index + 1}`}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-fg font-semibold capitalize">
-                    {formatImageName(image)}
-                  </h3>
-                </div>
+                <Image
+                  src={getImagePath(image)}
+                  alt={`${formatImageName(image)} - Drawing ${index + 1}`}
+                  fill
+                  className="object-contain transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
               </div>
-            ))}
-          </div>
+              <div style={{ padding: "12px 16px 16px" }}>
+                <p
+                  className="capitalize"
+                  style={{
+                    fontFamily: "var(--font-space-mono), monospace",
+                    fontSize: 10,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "var(--muted-2)",
+                  }}
+                >
+                  {formatImageName(image)}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
 
-          {/* Back to Portfolio */}
-          <div className="text-center mt-12">
-            <Link
-              href="/portfolio"
-              className="bg-accent hover:bg-accent-hover text-page hover:text-fg px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
-            >
-              Back to Portfolio
-            </Link>
-          </div>
+        <div style={{ marginTop: 40 }}>
+          <Link href="/#work" className="btn">
+            ← Back to My Work
+          </Link>
         </div>
       </main>
 
-      {/* Modal for full-size image */}
       {isModalOpen && selectedImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "oklch(0 0 0 / .92)", backdropFilter: "blur(8px)" }}
           onClick={closeModal}
           role="dialog"
           aria-modal="true"
           aria-label="Image gallery modal"
         >
-          {/* Close button */}
           <button
             onClick={closeModal}
-            className="absolute top-4 right-4 text-fg hover:text-accent transition-colors text-4xl font-bold z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
+            className="absolute top-4 right-4 z-10 flex items-center justify-center"
+            style={{
+              width: 44, height: 44,
+              border: "1px solid var(--rule)",
+              color: "var(--fg)",
+              background: "oklch(0 0 0 / .5)",
+              fontSize: 24,
+              transition: "border-color .2s, color .2s",
+            }}
             aria-label="Close modal"
           >
             ×
           </button>
 
-          {/* Left arrow */}
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              goToPrevious();
+            onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center"
+            style={{
+              width: 44, height: 44,
+              border: "1px solid var(--rule)",
+              color: "var(--fg)",
+              background: "oklch(0 0 0 / .5)",
+              fontSize: 20,
+              transition: "border-color .2s, color .2s",
             }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-fg hover:text-accent transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
             aria-label="Previous image"
           >
             ←
           </button>
 
-          {/* Right arrow */}
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              goToNext();
+            onClick={(e) => { e.stopPropagation(); goToNext(); }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center"
+            style={{
+              width: 44, height: 44,
+              border: "1px solid var(--rule)",
+              color: "var(--fg)",
+              background: "oklch(0 0 0 / .5)",
+              fontSize: 20,
+              transition: "border-color .2s, color .2s",
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-fg hover:text-accent transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/70"
             aria-label="Next image"
           >
             →
           </button>
 
-          {/* Image counter */}
           <div
-            className="absolute top-4 left-1/2 -translate-x-1/2 text-fg bg-black/50 rounded-full px-4 py-2 z-10"
+            className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2"
+            style={{
+              fontFamily: "var(--font-space-mono), monospace",
+              fontSize: 10,
+              letterSpacing: "0.1em",
+              color: "var(--muted)",
+              background: "oklch(0 0 0 / .5)",
+              border: "1px solid var(--rule)",
+            }}
             aria-live="polite"
             aria-atomic="true"
           >
             {currentIndex + 1} / {PORTFOLIO_IMAGES.length}
           </div>
 
-          {/* Image container */}
           <div
             className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}

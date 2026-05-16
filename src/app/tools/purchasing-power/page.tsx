@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Masthead from '@/components/Masthead';
 import { PURCHASING_POWER_METADATA } from '@/constants/purchasing-power';
 import { formatNumberWithCommas, getNumericValue, formatCurrency, generateYearOptions } from '@/utils/formatting';
 import { calculateSliderPosition, calculateRangeWidth } from '@/utils/slider';
@@ -90,29 +91,29 @@ export default function PurchasingPowerCalculator() {
 
 
   return (
-    <div className="theme-lab min-h-screen bg-page">
-      {/* Navigation */}
-      <nav className="flex justify-between items-center p-6">
-        <Link href="/" className="font-display text-2xl font-medium text-fg tracking-tight">Lei Yang</Link>
-        <div className="hidden md:flex space-x-8">
-          <Link href="/portfolio" className="text-muted hover:text-fg transition-colors">
-            Portfolio
-          </Link>
-          <Link href="/resume" className="text-muted hover:text-fg transition-colors">
-            Resume
-          </Link>
-          <Link href="/tools" className="text-accent hover:text-fg transition-colors">
-            Tools & AI
-          </Link>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-page">
+      <Masthead />
 
-      <main className="container mx-auto px-6 py-12">
+      <main className="shell py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="font-mono text-4xl md:text-6xl font-medium text-fg tracking-tight mb-6">
-              Purchasing Power <span className="text-accent">Calculator</span>
+            <h1
+              style={{
+                fontFamily: "var(--font-bricolage), sans-serif",
+                fontWeight: 600,
+                fontVariationSettings: '"opsz" 72',
+                fontSize: "clamp(32px, 5vw, 72px)",
+                lineHeight: 0.92,
+                letterSpacing: "-0.035em",
+                marginBottom: 16,
+                color: "var(--fg)",
+              }}
+            >
+              Purchasing{" "}
+              <span style={{ fontFamily: "var(--font-bodoni), serif", fontStyle: "italic", color: "var(--accent)" }}>
+                Power
+              </span>
             </h1>
             <p className="text-xl text-muted">
               See how the value of money changes over time using official CPI data
@@ -120,7 +121,7 @@ export default function PurchasingPowerCalculator() {
           </div>
 
           {/* Calculator Form */}
-          <div className="bg-surface border border-rule rounded-xl p-8 mb-8">
+          <div className="bg-surface border border-rule p-8 mb-8">
             <div className="grid md:grid-cols-2 gap-6">
               {/* Amount Input */}
               <div>
@@ -131,7 +132,7 @@ export default function PurchasingPowerCalculator() {
                   type="text"
                   value={displayAmount}
                   onChange={(e) => handleAmountChange(e.target.value)}
-                  className="w-full px-4 py-3 bg-elevated border border-rule rounded-lg text-fg placeholder-muted focus:outline-none focus:ring-2 focus:ring-accent h-12"
+                  className="w-full px-4 py-3 bg-elevated border border-rule text-fg placeholder-muted focus:outline-none focus:ring-2 focus:ring-accent h-12"
                   placeholder="Enter amount (e.g., 1,000,000)"
                 />
               </div>
@@ -144,7 +145,7 @@ export default function PurchasingPowerCalculator() {
                 <select
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-4 py-3 bg-elevated border border-rule rounded-lg text-fg focus:outline-none focus:ring-2 focus:ring-accent h-12"
+                  className="w-full px-4 py-3 bg-elevated border border-rule text-fg focus:outline-none focus:ring-2 focus:ring-accent h-12"
                 >
                   {metadata.locations.map((loc) => (
                     <option key={loc.id} value={loc.id} className="bg-elevated">
@@ -237,7 +238,7 @@ export default function PurchasingPowerCalculator() {
                         setFromYear(newFromYear);
                       }
                     }}
-                    className="w-full px-3 py-2 bg-elevated border border-rule rounded-lg text-fg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+                    className="w-full px-3 py-2 bg-elevated border border-rule text-fg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                   >
                     {locationDateRange && generateYearOptions(locationDateRange.min, locationDateRange.max).map((year) => (
                       <option key={year} value={year} className="bg-elevated">
@@ -257,7 +258,7 @@ export default function PurchasingPowerCalculator() {
                         setToYear(newToYear);
                       }
                     }}
-                    className="w-full px-3 py-2 bg-elevated border border-rule rounded-lg text-fg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+                    className="w-full px-3 py-2 bg-elevated border border-rule text-fg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                   >
                     {locationDateRange && generateYearOptions(locationDateRange.min, locationDateRange.max).map((year) => (
                       <option key={year} value={year} className="bg-elevated">
@@ -281,7 +282,7 @@ export default function PurchasingPowerCalculator() {
               <button
                 onClick={handleCalculate}
                 disabled={loading || !amount || !metadata}
-                className="bg-accent hover:bg-accent-hover disabled:bg-elevated disabled:text-muted disabled:cursor-not-allowed text-page hover:text-fg px-8 py-3 rounded-lg font-semibold transition-colors"
+                className="btn btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {loading ? 'Calculating...' : 'Calculate Purchasing Power'}
               </button>
@@ -297,8 +298,8 @@ export default function PurchasingPowerCalculator() {
 
           {/* Results Display */}
           {result && (
-            <div className="bg-surface border border-rule rounded-xl p-8">
-              <h2 className="font-mono text-2xl font-medium text-fg mb-6 text-center">
+            <div className="bg-surface border border-rule p-8">
+              <h2 className="text-2xl font-semibold text-fg mb-6 text-center">
                 Purchasing Power Results
               </h2>
 
@@ -324,7 +325,7 @@ export default function PurchasingPowerCalculator() {
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Main Result */}
                 <div className="text-center">
-                  <div className="bg-elevated border border-rule rounded-lg p-6 mb-4">
+                  <div className="bg-elevated border border-rule p-6 mb-4">
                     <p className="text-muted text-sm mb-2">
                       {formatCurrency(result.originalAmount)} in {result.originalYear}
                     </p>
@@ -344,7 +345,7 @@ export default function PurchasingPowerCalculator() {
 
                 {/* Detailed Information */}
                 <div className="space-y-4">
-                  <div className="bg-elevated border border-rule rounded-lg p-4">
+                  <div className="bg-elevated border border-rule p-4">
                     <h3 className="text-fg font-semibold mb-2">Location</h3>
                     <p className="text-muted">
                       {metadata.locations.find(l => l.id === result.location)?.name}
@@ -354,7 +355,7 @@ export default function PurchasingPowerCalculator() {
                     </p>
                   </div>
 
-                  <div className="bg-elevated border border-rule rounded-lg p-4">
+                  <div className="bg-elevated border border-rule p-4">
                     <h3 className="text-fg font-semibold mb-2">CPI Data</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
@@ -368,7 +369,7 @@ export default function PurchasingPowerCalculator() {
                     </div>
                   </div>
 
-                  <div className="bg-elevated border border-rule rounded-lg p-4">
+                  <div className="bg-elevated border border-rule p-4">
                     <h3 className="text-fg font-semibold mb-2">Available Data Range</h3>
                     <p className="text-muted text-sm">
                       {locationDateRange ?
@@ -413,7 +414,7 @@ export default function PurchasingPowerCalculator() {
 
           {/* Information Section */}
           <div className="mt-12 bg-surface border border-rule rounded-xl p-8">
-            <h2 className="font-mono text-2xl font-medium text-fg mb-6 text-center">
+            <h2 className="text-2xl font-semibold text-fg mb-6 text-center">
               About This Calculator
             </h2>
             <div className="grid md:grid-cols-2 gap-8">

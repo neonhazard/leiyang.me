@@ -1,219 +1,330 @@
 import Link from "next/link";
+import Masthead from "@/components/Masthead";
 
 export default function Resume() {
   return (
     <div className="min-h-screen bg-page">
-      {/* Navigation */}
-      <nav className="flex justify-between items-center p-6">
-        <Link href="/" className="font-display text-2xl font-medium text-fg tracking-tight">Lei Yang</Link>
-        <div className="hidden md:flex space-x-8">
-          <Link href="/portfolio" className="text-muted hover:text-fg transition-colors">
-            Portfolio
-          </Link>
-          <Link href="/resume" className="text-accent hover:text-fg transition-colors">
-            Resume
-          </Link>
-          <Link href="/tools" className="text-muted hover:text-fg transition-colors">
-            Tools & AI
-          </Link>
-        </div>
-      </nav>
+      <Masthead />
 
-      {/* Resume Content */}
-      <main className="container mx-auto px-6 py-12">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="font-display text-4xl md:text-6xl font-medium text-fg tracking-tight mb-6 text-center">
-            Resume & <span className="text-accent">Experience</span>
-          </h1>
-
-          {/* Resume Sections */}
-          <div className="space-y-12">
-            {/* Header with Name and Contact Info */}
-            <section className="bg-surface border border-rule rounded-xl p-8 text-center">
-              <h2 className="font-display text-4xl font-medium text-fg tracking-tight mb-4">LEI YANG</h2>
-              <div className="text-muted space-y-2">
-                <p>661-755-0727</p>
-                <p>
-                  <a
-                    href="mailto:lei@leiyang.me"
-                    className="text-accent hover:text-fg transition-colors"
-                  >
-                    lei@leiyang.me
-                  </a>
-                  {' • '}
-                  <a
-                    href="https://linkedin.com/in/lei-yang"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent hover:text-fg transition-colors"
-                  >
-                    linkedin.com/in/lei-yang
-                  </a>
-                  {' • '}
-                  <a
-                    href="https://www.leiyang.me"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent hover:text-fg transition-colors"
-                  >
-                    www.leiyang.me
-                  </a>
-                </p>
-              </div>
-            </section>
-
-            {/* Profile Section */}
-            <section className="bg-surface border border-rule rounded-xl p-8">
-              <h2 className="text-2xl font-bold text-fg mb-6">PROFILE</h2>
-              <ul className="text-muted space-y-3">
-                <li>• Lead Animator with 15+ years of AAA game development experience, including multiple shipped Call of Duty titles</li>
-                <li>• Proven expertise in AI animation systems, motion capture direction, and animation pipeline design</li>
-                <li>• Strong leader of distributed teams, mentoring animators across international studios to deliver high-quality results</li>
-                <li>• Blends realism with cinematic impact to create immersive, responsive, and memorable gameplay experiences</li>
-                <li>• Highly technical, with deep proficiency in Maya, MEL scripting, rigging, and game engines</li>
-              </ul>
-            </section>
-
-            {/* Experience Section */}
-            <section className="bg-surface border border-rule rounded-xl p-8">
-              <h2 className="text-2xl font-bold text-fg mb-6">EXPERIENCE</h2>
-              <div className="space-y-8">
-                {/* Lead AI Animator */}
-                <div className="border-l-2 border-accent pl-6">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
-                    <div>
-                      <h3 className="text-xl font-semibold text-fg">LEAD AI ANIMATOR</h3>
-                      <p className="text-accent">INFINITY WARD, WOODLAND HILLS, CALIFORNIA</p>
-                    </div>
-                    <p className="text-muted text-sm">2021 – 2025</p>
-                  </div>
-                  <div className="text-muted text-sm mb-3">
-                    <p className="font-semibold">PROJECT: CALL OF DUTY: MODERN WARFARE II</p>
-                    <p className="font-semibold">PROJECT: CALL OF DUTY: MODERN WARFARE III</p>
-                  </div>
-                  <ul className="text-muted text-sm space-y-1">
-                    <li>• Directed animation pipelines for gameplay NPC behaviors to meet AAA quality standards</li>
-                    <li>• Supervised and developed a team of 5 animators (3 in Los Angeles, 2 in Poland), elevating artistic quality and technical efficiency</li>
-                    <li>• Partnered with design and engineering teams to deliver realistic AI behaviors and immersive combat experiences</li>
-                    <li>• Redesigned AI combat loop and reaction systems, improving NPC responsiveness and overall player immersion</li>
-                    <li>• Oversaw motion capture shoots, capturing authentic military performances and streamlining asset integration</li>
-                    <li>• Owned animation systems for all soldier and civilian AI, ensuring consistency and gameplay readability</li>
-                  </ul>
-                </div>
-
-                {/* Contract Lead Animator */}
-                <div className="border-l-2 border-accent pl-6">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
-                    <div>
-                      <h3 className="text-xl font-semibold text-fg">CONTRACT LEAD ANIMATOR</h3>
-                      <p className="text-accent">ROGUE INITIATIVE STUDIO, LOS ANGELES, CALIFORNIA</p>
-                    </div>
-                    <p className="text-muted text-sm">2019 – 2021</p>
-                  </div>
-                  <div className="text-muted text-sm mb-3">
-                    <p className="font-semibold">PROJECT: UNANNOUNCED GAME PROJECT</p>
-                  </div>
-                  <ul className="text-muted text-sm space-y-1 mb-4">
-                    <li>• Designed and maintained animation pipelines, including rigging, skinning, and tool development, to streamline production workflows</li>
-                    <li>• Led animation team remotely across multiple locations, providing mentorship, feedback, and direction to ensure alignment and quality</li>
-                  </ul>
-                  <div className="text-muted text-sm mb-3">
-                    <p className="font-semibold">PROJECT: UNANNOUNCED MOVIE PROJECT</p>
-                  </div>
-                  <ul className="text-muted text-sm space-y-1">
-                    <li>• Created Previz shots based on director&apos;s vision</li>
-                    <li>• Created rigs, skinned mesh, and produced animations</li>
-                  </ul>
-                </div>
-
-                {/* Co-Founder */}
-                <div className="border-l-2 border-accent pl-6">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
-                    <div>
-                      <h3 className="text-xl font-semibold text-fg">CO-FOUNDER</h3>
-                      <p className="text-accent">SUPERFINE GAMES INC, DELAWARE</p>
-                    </div>
-                    <p className="text-muted text-sm">2017 – 2019</p>
-                  </div>
-                  <div className="text-muted text-sm mb-3">
-                    <p className="font-semibold">PROJECT: TINY SHEEP AR</p>
-                  </div>
-                  <ul className="text-muted text-sm space-y-1">
-                    <li>• Created animation pipeline and assets for Unity</li>
-                  </ul>
-                </div>
-
-                {/* VFX Supervisor */}
-                <div className="border-l-2 border-accent pl-6">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
-                    <div>
-                      <h3 className="text-xl font-semibold text-fg">VFX SUPERVISOR</h3>
-                      <p className="text-accent">LEBUSISHU FILMS CO,.LTD, CHINA</p>
-                    </div>
-                    <p className="text-muted text-sm">2016 – 2017</p>
-                  </div>
-                  <div className="text-muted text-sm mb-3">
-                    <p className="font-semibold">PROJECT: GUNS AND KIDNEYS</p>
-                  </div>
-                  <ul className="text-muted text-sm space-y-1">
-                    <li>• Planned and executed VFX shots to the director&apos;s vision</li>
-                    <li>• Managed VFX team for onsite data collection and back plate shots</li>
-                    <li>• Supervised post production VFX shots</li>
-                  </ul>
-                </div>
-
-                {/* Senior Animator */}
-                <div className="border-l-2 border-accent pl-6">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
-                    <div>
-                      <h3 className="text-xl font-semibold text-fg">SENIOR ANIMATOR</h3>
-                      <p className="text-accent">INFINITY WARD, WOODLAND HILLS, CALIFORNIA</p>
-                    </div>
-                    <p className="text-muted text-sm">2004 – 2015</p>
-                  </div>
-                  <div className="text-muted text-sm mb-3">
-                    <p className="font-semibold">PROJECT: CALL OF DUTY: INFINITE WARFARE</p>
-                    <p className="font-semibold">PROJECT: CALL OF DUTY: ADVANCED WARFARE</p>
-                    <p className="font-semibold">PROJECT: CALL OF DUTY: GHOSTS</p>
-                    <p className="font-semibold">PROJECT: CALL OF DUTY: MODERN WARFARE 3</p>
-                    <p className="font-semibold">PROJECT: CALL OF DUTY: MODERN WARFARE 2</p>
-                    <p className="font-semibold">PROJECT: CALL OF DUTY: MODERN WARFARE</p>
-                    <p className="font-semibold">PROJECT: CALL OF DUTY 2</p>
-                  </div>
-                  <ul className="text-muted text-sm space-y-1">
-                    <li>• Contributed AI, cinematic, and vehicle animations across five major Call of Duty titles, from Call of Duty 2 through Infinite Warfare</li>
-                    <li>• Vehicle rigging and skinning</li>
-                    <li>• Led development of dog &quot;Riley&quot; animation assets, a signature gameplay feature, collaborating with one other animator on design, creation, and implementation</li>
-                    <li>• Drove the design and creation of snowmobile animation assets, ensuring gameplay integration and polish</li>
-                    <li>• Owned creation and implementation of animation assets for the level &quot;The Coup,&quot; driving cinematic impact</li>
-                    <li>• Spearheaded the &quot;Pointe Du Hoc&quot; massive beach invasion scene for the E3 showcase, delivering a high-visibility feature under tight deadlines</li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            {/* Download Section */}
-            <section className="bg-surface border border-rule rounded-xl p-8 text-center">
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/portfolio"
-                  className="bg-accent hover:bg-accent-hover text-page hover:text-fg px-8 py-3 rounded-lg font-semibold transition-colors text-center"
-                >
-                  View My Portfolio
-                </Link>
-                <a
-                  href="/documents/Lei_Yang_resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="border border-accent text-accent hover:bg-accent hover:text-page px-8 py-3 rounded-lg font-semibold transition-colors text-center"
-                >
-                  Download PDF Resume
-                </a>
-              </div>
-            </section>
+      <main className="shell py-16">
+        <div className="mb-12">
+          <div
+            style={{
+              fontFamily: "var(--font-space-mono), monospace",
+              fontSize: 11,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+              marginBottom: 12,
+            }}
+          >
+            Curriculum Vitae
           </div>
+          <h1
+            style={{
+              fontFamily: "var(--font-bricolage), sans-serif",
+              fontWeight: 600,
+              fontVariationSettings: '"opsz" 72',
+              fontSize: "clamp(40px, 6vw, 88px)",
+              lineHeight: 0.92,
+              letterSpacing: "-0.035em",
+              margin: "0 0 16px",
+              color: "var(--fg)",
+            }}
+          >
+            Resume &amp; <span style={{ fontFamily: "var(--font-bodoni), serif", fontStyle: "italic", color: "var(--accent)" }}>Experience</span>
+          </h1>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+
+          {/* Contact header */}
+          <section
+            style={{
+              border: "1px solid var(--rule)",
+              padding: "32px 40px",
+              textAlign: "center",
+              marginBottom: -1,
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: "var(--font-bricolage), sans-serif",
+                fontWeight: 700,
+                fontVariationSettings: '"opsz" 72',
+                fontSize: 36,
+                letterSpacing: "-0.03em",
+                color: "var(--fg)",
+                margin: "0 0 12px",
+              }}
+            >
+              LEI YANG
+            </h2>
+            <div
+              style={{
+                fontFamily: "var(--font-space-mono), monospace",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                color: "var(--muted)",
+                display: "flex",
+                justifyContent: "center",
+                flexWrap: "wrap",
+                gap: "0 16px",
+              }}
+            >
+              <span>661-755-0727</span>
+              <a href="mailto:lei@leiyang.me" style={{ color: "var(--accent)" }}>lei@leiyang.me</a>
+              <a href="https://linkedin.com/in/lei-yang" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
+                linkedin.com/in/lei-yang
+              </a>
+              <a href="https://www.leiyang.me" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
+                leiyang.me
+              </a>
+            </div>
+          </section>
+
+          {/* Profile */}
+          <section style={{ border: "1px solid var(--rule)", padding: "32px 40px", marginBottom: -1 }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-space-mono), monospace",
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+                margin: "0 0 20px",
+              }}
+            >
+              Profile
+            </h2>
+            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+              {[
+                "Lead Animator with 15+ years of AAA game development experience, including multiple shipped Call of Duty titles",
+                "Proven expertise in AI animation systems, motion capture direction, and animation pipeline design",
+                "Strong leader of distributed teams, mentoring animators across international studios to deliver high-quality results",
+                "Blends realism with cinematic impact to create immersive, responsive, and memorable gameplay experiences",
+                "Highly technical, with deep proficiency in Maya, MEL scripting, rigging, and game engines",
+              ].map((item) => (
+                <li
+                  key={item}
+                  style={{
+                    fontFamily: "var(--font-bricolage), sans-serif",
+                    fontWeight: 300,
+                    fontSize: 15,
+                    color: "var(--muted)",
+                    paddingLeft: 18,
+                    position: "relative",
+                  }}
+                >
+                  <span style={{ position: "absolute", left: 0, color: "var(--accent)" }}>·</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* Experience */}
+          <section style={{ border: "1px solid var(--rule)", padding: "32px 40px", marginBottom: -1 }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-space-mono), monospace",
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+                margin: "0 0 32px",
+              }}
+            >
+              Experience
+            </h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
+
+              <ExperienceBlock
+                title="LEAD AI ANIMATOR"
+                company="INFINITY WARD, WOODLAND HILLS, CALIFORNIA"
+                period="2021 – 2025"
+                projects={["CALL OF DUTY: MODERN WARFARE II", "CALL OF DUTY: MODERN WARFARE III"]}
+                bullets={[
+                  "Directed animation pipelines for gameplay NPC behaviors to meet AAA quality standards",
+                  "Supervised and developed a team of 5 animators (3 in Los Angeles, 2 in Poland), elevating artistic quality and technical efficiency",
+                  "Partnered with design and engineering teams to deliver realistic AI behaviors and immersive combat experiences",
+                  "Redesigned AI combat loop and reaction systems, improving NPC responsiveness and overall player immersion",
+                  "Oversaw motion capture shoots, capturing authentic military performances and streamlining asset integration",
+                  "Owned animation systems for all soldier and civilian AI, ensuring consistency and gameplay readability",
+                ]}
+              />
+
+              <ExperienceBlock
+                title="CONTRACT LEAD ANIMATOR"
+                company="ROGUE INITIATIVE STUDIO, LOS ANGELES, CALIFORNIA"
+                period="2019 – 2021"
+                projects={["UNANNOUNCED GAME PROJECT", "UNANNOUNCED MOVIE PROJECT"]}
+                bullets={[
+                  "Designed and maintained animation pipelines, including rigging, skinning, and tool development, to streamline production workflows",
+                  "Led animation team remotely across multiple locations, providing mentorship, feedback, and direction",
+                  "Created Previz shots based on director's vision",
+                  "Created rigs, skinned mesh, and produced animations",
+                ]}
+              />
+
+              <ExperienceBlock
+                title="CO-FOUNDER"
+                company="SUPERFINE GAMES INC, DELAWARE"
+                period="2017 – 2019"
+                projects={["TINY SHEEP AR"]}
+                bullets={["Created animation pipeline and assets for Unity"]}
+              />
+
+              <ExperienceBlock
+                title="VFX SUPERVISOR"
+                company="LEBUSISHU FILMS CO,.LTD, CHINA"
+                period="2016 – 2017"
+                projects={["GUNS AND KIDNEYS"]}
+                bullets={[
+                  "Planned and executed VFX shots to the director's vision",
+                  "Managed VFX team for onsite data collection and back plate shots",
+                  "Supervised post production VFX shots",
+                ]}
+              />
+
+              <ExperienceBlock
+                title="SENIOR ANIMATOR"
+                company="INFINITY WARD, WOODLAND HILLS, CALIFORNIA"
+                period="2004 – 2015"
+                projects={[
+                  "CALL OF DUTY: INFINITE WARFARE",
+                  "CALL OF DUTY: ADVANCED WARFARE",
+                  "CALL OF DUTY: GHOSTS",
+                  "CALL OF DUTY: MODERN WARFARE 3",
+                  "CALL OF DUTY: MODERN WARFARE 2",
+                  "CALL OF DUTY: MODERN WARFARE",
+                  "CALL OF DUTY 2",
+                ]}
+                bullets={[
+                  "Contributed AI, cinematic, and vehicle animations across five major Call of Duty titles",
+                  "Vehicle rigging and skinning",
+                  'Led development of dog "Riley" animation assets, a signature gameplay feature',
+                  "Drove the design and creation of snowmobile animation assets",
+                  'Owned creation and implementation of animation assets for the level "The Coup"',
+                  'Spearheaded the "Pointe Du Hoc" massive beach invasion scene for the E3 showcase',
+                ]}
+              />
+            </div>
+          </section>
+
+          {/* CTA */}
+          <section style={{ border: "1px solid var(--rule)", padding: "32px 40px" }}>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/#work" className="btn btn-primary">
+                View My Work <span className="arr">→</span>
+              </Link>
+              <a
+                href="/documents/Lei_Yang_resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn"
+              >
+                Download PDF <span className="arr">↗</span>
+              </a>
+            </div>
+          </section>
         </div>
       </main>
+    </div>
+  );
+}
+
+function ExperienceBlock({
+  title,
+  company,
+  period,
+  projects,
+  bullets,
+}: {
+  title: string;
+  company: string;
+  period: string;
+  projects: string[];
+  bullets: string[];
+}) {
+  return (
+    <div style={{ paddingLeft: 24, borderLeft: "2px solid var(--accent)" }}>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start" style={{ marginBottom: 10 }}>
+        <div>
+          <h3
+            style={{
+              fontFamily: "var(--font-bricolage), sans-serif",
+              fontWeight: 600,
+              fontSize: 17,
+              letterSpacing: "-0.01em",
+              color: "var(--fg)",
+              margin: "0 0 4px",
+            }}
+          >
+            {title}
+          </h3>
+          <p
+            style={{
+              fontFamily: "var(--font-space-mono), monospace",
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+              margin: 0,
+            }}
+          >
+            {company}
+          </p>
+        </div>
+        <span
+          style={{
+            fontFamily: "var(--font-space-mono), monospace",
+            fontSize: 10,
+            letterSpacing: "0.06em",
+            color: "var(--muted-2)",
+            whiteSpace: "nowrap",
+            marginTop: 2,
+          }}
+        >
+          {period}
+        </span>
+      </div>
+
+      <div style={{ marginBottom: 10 }}>
+        {projects.map((p) => (
+          <div
+            key={p}
+            style={{
+              fontFamily: "var(--font-space-mono), monospace",
+              fontSize: 9,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "var(--muted-2)",
+            }}
+          >
+            {p}
+          </div>
+        ))}
+      </div>
+
+      <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
+        {bullets.map((b) => (
+          <li
+            key={b}
+            style={{
+              fontFamily: "var(--font-bricolage), sans-serif",
+              fontWeight: 300,
+              fontSize: 13,
+              color: "var(--muted)",
+              paddingLeft: 14,
+              position: "relative",
+            }}
+          >
+            <span style={{ position: "absolute", left: 0, color: "var(--accent)" }}>·</span>
+            {b}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

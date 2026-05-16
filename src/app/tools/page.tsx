@@ -1,60 +1,114 @@
 import Link from "next/link";
+import Masthead from "@/components/Masthead";
 
 export default function Tools() {
   return (
-    <div className="theme-lab min-h-screen bg-page">
-      {/* Navigation */}
-      <nav className="flex justify-between items-center p-6">
-        <Link href="/" className="font-display text-2xl font-medium text-fg tracking-tight">Lei Yang</Link>
-        <div className="hidden md:flex space-x-8">
-          <Link href="/portfolio" className="text-muted hover:text-fg transition-colors">
-            Portfolio
-          </Link>
-          <Link href="/resume" className="text-muted hover:text-fg transition-colors">
-            Resume
-          </Link>
-          <Link href="/tools" className="text-accent hover:text-fg transition-colors">
-            Tools & AI
-          </Link>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-page">
+      <Masthead />
 
-      {/* Tools Header */}
-      <main className="container mx-auto px-6 py-12">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="font-mono text-4xl md:text-6xl font-medium text-fg tracking-tight mb-6 text-center">
-            AI Tools & <span className="text-accent">Agents</span>
-          </h1>
-          <p className="text-xl text-muted text-center mb-12">
-            Personal tools and AI-powered solutions I&apos;ve built
-          </p>
-
-          {/* Tools Grid: centers any number of cards (1, 2, 3+) and wraps cleanly */}
-          <div className="flex flex-wrap justify-center gap-8">
-            {/* Purchasing Power Calculator */}
-            <Link
-              href="/tools/purchasing-power"
-              className="block w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]"
-            >
-              <div className="bg-surface border border-rule rounded-xl p-6 hover:border-accent transition-colors duration-300 h-full">
-                <div className="text-4xl mb-4">💰</div>
-                <h3 className="text-xl font-semibold text-fg mb-2">Purchasing Power Calculator</h3>
-                <p className="text-muted text-sm mb-4">
-                  Calculate how the value of money changes over time using official CPI data
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="bg-elevated text-muted border border-rule px-2 py-1 rounded font-mono text-xs uppercase tracking-wider">Finance</span>
-                  <span className="bg-elevated text-muted border border-rule px-2 py-1 rounded font-mono text-xs uppercase tracking-wider">CPI Data</span>
-                  <span className="bg-elevated text-muted border border-rule px-2 py-1 rounded font-mono text-xs uppercase tracking-wider">API</span>
-                </div>
-                <button className="w-full bg-accent hover:bg-accent-hover text-page py-2 rounded-lg transition-colors font-semibold">
-                  Try It Out
-                </button>
-              </div>
-            </Link>
+      <main className="shell py-16">
+        <div className="mb-12">
+          <div
+            style={{
+              fontFamily: "var(--font-space-mono), monospace",
+              fontSize: 11,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+              marginBottom: 12,
+            }}
+          >
+            Side projects · experiments
           </div>
+          <h1
+            style={{
+              fontFamily: "var(--font-bricolage), sans-serif",
+              fontWeight: 600,
+              fontVariationSettings: '"opsz" 72',
+              fontSize: "clamp(40px, 6vw, 88px)",
+              lineHeight: 0.92,
+              letterSpacing: "-0.035em",
+              margin: "0 0 16px",
+              color: "var(--fg)",
+            }}
+          >
+            The <span style={{ fontFamily: "var(--font-bodoni), serif", fontStyle: "italic", color: "var(--accent)" }}>playground</span>
+          </h1>
+          <p style={{ color: "var(--muted)", fontSize: 18, fontWeight: 300, maxWidth: 480 }}>
+            Personal tools and AI-powered solutions I&apos;ve built.
+          </p>
+        </div>
+
+        <div style={{ maxWidth: 640 }}>
+          <Link
+            href="/tools/purchasing-power"
+            className="pcard"
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <div
+              className="pcard-art"
+              style={{ aspectRatio: "16/9", background: "var(--surface)" }}
+            >
+              <PowerArt />
+            </div>
+            <div className="pcard-body">
+              <div className="pcard-kind">
+                <span className="pip" />AI Tool · TOOL · 01
+              </div>
+              <h3 className="pcard-name">
+                Purchasing <span className="it">Power</span>
+              </h3>
+              <p className="pcard-desc">
+                An interactive CPI calculator that shows how inflation erodes purchasing
+                power over time. Pulls live data from the Federal Reserve and Bureau of
+                Labor Statistics.
+              </p>
+              <div className="pcard-foot">
+                <span className="pcard-launch">Launch <span className="arr">→</span></span>
+                <span className="pcard-status">Live · v1.0</span>
+              </div>
+            </div>
+          </Link>
         </div>
       </main>
     </div>
+  );
+}
+
+function PowerArt() {
+  return (
+    <svg
+      viewBox="0 0 400 225"
+      preserveAspectRatio="xMidYMid slice"
+      style={{ width: "100%", height: "100%", display: "block" }}
+    >
+      <defs>
+        <radialGradient id="pBgTools" cx="40%" cy="60%" r="65%">
+          <stop offset="0" stopColor="oklch(0.22 0.06 25)" />
+          <stop offset="1" stopColor="oklch(0.14 0.025 285)" />
+        </radialGradient>
+      </defs>
+      <rect width="400" height="225" fill="url(#pBgTools)" />
+      {[40, 80, 120, 160, 200].map((y) => (
+        <line key={y} x1="30" y1={y} x2="370" y2={y}
+          stroke="oklch(0.95 0.02 75)" strokeWidth="0.3" opacity="0.12" />
+      ))}
+      <path
+        d="M 30 50 C 80 55, 130 75, 180 110 S 280 165, 370 185"
+        stroke="var(--accent)" strokeWidth="1.5" fill="none" opacity="0.85" strokeDasharray="5 3"
+      />
+      <path
+        d="M 30 50 C 90 52, 150 54, 210 56 S 310 60, 370 62"
+        stroke="oklch(0.95 0.02 75)" strokeWidth="1.8" fill="none" opacity="0.8"
+      />
+      <path
+        d="M 30 50 C 80 55, 130 75, 180 110 S 280 165, 370 185 L 370 225 L 30 225 Z"
+        fill="var(--accent)" opacity="0.06"
+      />
+      <text x="14" y="18" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="oklch(0.78 0.018 75)" letterSpacing="1">CPI · INDEX</text>
+      <text x="316" y="18" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="var(--accent)" letterSpacing="1">1913–2026</text>
+    </svg>
   );
 }
