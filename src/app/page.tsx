@@ -1,95 +1,465 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect, useRef } from "react";
+import Masthead from "@/components/Masthead";
+
+/* ── data ───────────────────────────────────────────────── */
+
+const CREDITS = [
+  { k: "Director",    v: "Lei Yang",       s: "Lead Animator" },
+  { k: "Studio",      v: "Infinity Ward",  s: "Activision" },
+  { k: "Filmography", v: "9 titles",       s: "Call of Duty franchise" },
+  { k: "Locale",      v: "Los Angeles",    s: "California · USA" },
+];
+
+
+/* ── ambient aura drift ─────────────────────────────────── */
+
+function AmbientBackground() {
+  const a1Ref = useRef<HTMLDivElement>(null);
+  const a2Ref = useRef<HTMLDivElement>(null);
+  const a3Ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let frame: number;
+    const start = performance.now();
+
+    function tick(now: number) {
+      const t = (now - start) / 1000;
+
+      if (a1Ref.current) {
+        const x = Math.sin(t / 25) * 40;
+        const y = Math.cos(t / 30) * 30;
+        a1Ref.current.style.transform = `translate(${x}px, ${y}px)`;
+      }
+      if (a2Ref.current) {
+        const x = Math.cos(t / 35) * 50;
+        const y = Math.sin(t / 40) * 40;
+        a2Ref.current.style.transform = `translate(${x}px, ${y}px)`;
+      }
+      if (a3Ref.current) {
+        const x = Math.sin(t / 20 + 1) * 60;
+        const y = Math.cos(t / 28 + 2) * 50;
+        a3Ref.current.style.transform = `translate(${x}px, ${y}px)`;
+      }
+
+      frame = requestAnimationFrame(tick);
+    }
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  return (
+    <>
+      <div className="dots" />
+      <div className="aura a1" ref={a1Ref} />
+      <div className="aura a2" ref={a2Ref} />
+      <div className="aura a3" ref={a3Ref} />
+      <div className="grain" />
+    </>
+  );
+}
+
+/* ── scroll reveal ──────────────────────────────────────── */
+
+function useScrollReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>(".rev");
+    els.forEach((el) => el.classList.add("pre"));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
+
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => els.forEach((el) => observer.observe(el)))
+    );
+
+    return () => observer.disconnect();
+  }, []);
+}
+
+/* ── purchasing power cover art ─────────────────────────── */
+
+function PowerArt() {
+  return (
+    <svg
+      viewBox="0 0 400 225"
+      preserveAspectRatio="xMidYMid slice"
+      style={{ width: "100%", height: "100%", display: "block" }}
+    >
+      <defs>
+        <radialGradient id="pBg" cx="40%" cy="60%" r="65%">
+          <stop offset="0" stopColor="oklch(0.22 0.06 25)" />
+          <stop offset="1" stopColor="oklch(0.14 0.025 285)" />
+        </radialGradient>
+      </defs>
+      <rect width="400" height="225" fill="url(#pBg)" />
+
+      {[40, 80, 120, 160, 200].map((y) => (
+        <line key={y} x1="30" y1={y} x2="370" y2={y}
+          stroke="oklch(0.95 0.02 75)" strokeWidth="0.3" opacity="0.12" />
+      ))}
+
+      <path
+        d="M 30 50 C 80 55, 130 75, 180 110 S 280 165, 370 185"
+        stroke="var(--accent)" strokeWidth="1.5" fill="none" opacity="0.85"
+        strokeDasharray="5 3"
+      />
+      <path
+        d="M 30 50 C 90 52, 150 54, 210 56 S 310 60, 370 62"
+        stroke="oklch(0.95 0.02 75)" strokeWidth="1.8" fill="none" opacity="0.8"
+      />
+      <path
+        d="M 30 50 C 80 55, 130 75, 180 110 S 280 165, 370 185 L 370 225 L 30 225 Z"
+        fill="var(--accent)" opacity="0.06"
+      />
+
+      {[1980, 1990, 2000, 2010, 2020].map((yr, i) => {
+        const x = 30 + i * 85;
+        return (
+          <g key={yr}>
+            <line x1={x} y1="195" x2={x} y2="205"
+              stroke="oklch(0.78 0.018 75)" strokeWidth="0.5" opacity="0.4" />
+            <text x={x} y="215" textAnchor="middle"
+              fontFamily="Space Mono, monospace" fontSize="8"
+              fill="oklch(0.55 0.02 75)" letterSpacing="0.5">{yr}</text>
+          </g>
+        );
+      })}
+
+      <text x="14" y="18" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="oklch(0.78 0.018 75)" letterSpacing="1">CPI · INDEX</text>
+      <text x="316" y="18" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="var(--accent)" letterSpacing="1">1913–2026</text>
+      <text x="14" y="210" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="oklch(0.55 0.02 75)" letterSpacing="0.5">NOMINAL</text>
+      <text x="280" y="68" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="oklch(0.78 0.018 75)" letterSpacing="0.5">REAL ✓</text>
+    </svg>
+  );
+}
+
+/* ── work card art ──────────────────────────────────────── */
+
+function ReelArt() {
+  return (
+    <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice"
+      style={{ width: "100%", height: "100%", display: "block" }}>
+      <defs>
+        <radialGradient id="rBg" cx="60%" cy="40%" r="70%">
+          <stop offset="0" stopColor="oklch(0.22 0.06 285)" />
+          <stop offset="1" stopColor="oklch(0.14 0.025 285)" />
+        </radialGradient>
+      </defs>
+      <rect width="400" height="225" fill="url(#rBg)" />
+      {[0, 50, 100, 150, 200, 250, 300, 350].map((x) => (
+        <g key={x}>
+          <rect x={x + 8} y="6" width="18" height="14" rx="2"
+            fill="none" stroke="oklch(0.30 0.03 285)" strokeWidth="1" />
+          <rect x={x + 8} y="205" width="18" height="14" rx="2"
+            fill="none" stroke="oklch(0.30 0.03 285)" strokeWidth="1" />
+        </g>
+      ))}
+      <rect x="0" y="26" width="400" height="173" fill="oklch(0.17 0.04 285)" />
+      <line x1="0" y1="26" x2="400" y2="26" stroke="oklch(0.30 0.03 285)" strokeWidth="0.5" />
+      <line x1="0" y1="199" x2="400" y2="199" stroke="oklch(0.30 0.03 285)" strokeWidth="0.5" />
+      <text x="200" y="108" textAnchor="middle"
+        fontFamily="Space Mono, monospace" fontSize="9"
+        fill="oklch(0.55 0.02 75)" letterSpacing="3">GAME ANIMATION</text>
+      <text x="200" y="126" textAnchor="middle"
+        fontFamily="Space Mono, monospace" fontSize="9"
+        fill="var(--accent)" letterSpacing="2">CALL OF DUTY · 9 TITLES</text>
+    </svg>
+  );
+}
+
+function DrawingsArt() {
+  return (
+    <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice"
+      style={{ width: "100%", height: "100%", display: "block" }}>
+      <defs>
+        <radialGradient id="dBg" cx="40%" cy="55%" r="70%">
+          <stop offset="0" stopColor="oklch(0.20 0.04 285)" />
+          <stop offset="1" stopColor="oklch(0.13 0.025 285)" />
+        </radialGradient>
+      </defs>
+      <rect width="400" height="225" fill="url(#dBg)" />
+      <line x1="40" y1="180" x2="120" y2="60" stroke="oklch(0.78 0.018 75)" strokeWidth="0.8" opacity="0.3" />
+      <line x1="60" y1="180" x2="160" y2="50" stroke="oklch(0.78 0.018 75)" strokeWidth="0.8" opacity="0.2" />
+      <path d="M 100 160 Q 160 80, 220 120 T 340 90"
+        stroke="oklch(0.78 0.018 75)" strokeWidth="1.2" fill="none" opacity="0.4" />
+      <path d="M 80 140 Q 140 100, 200 130 T 320 100"
+        stroke="var(--accent)" strokeWidth="1" fill="none" opacity="0.5" strokeDasharray="4 3" />
+      <circle cx="200" cy="112" r="28" fill="none"
+        stroke="oklch(0.78 0.018 75)" strokeWidth="0.6" opacity="0.25" />
+      <text x="200" y="108" textAnchor="middle"
+        fontFamily="Space Mono, monospace" fontSize="9"
+        fill="oklch(0.55 0.02 75)" letterSpacing="3">2D ART</text>
+      <text x="200" y="126" textAnchor="middle"
+        fontFamily="Space Mono, monospace" fontSize="9"
+        fill="var(--accent)" letterSpacing="2">DRAWINGS · SKETCHES</text>
+    </svg>
+  );
+}
+
+/* ── page ───────────────────────────────────────────────── */
 
 export default function Home() {
+  useScrollReveal();
+
   return (
-    <div className="min-h-screen bg-page">
-      {/* Navigation */}
-      <nav className="flex justify-between items-center p-6">
-        <div className="font-display text-2xl font-medium text-fg tracking-tight">Lei Yang</div>
-        <div className="hidden md:flex space-x-8">
-          <Link href="/portfolio" className="text-muted hover:text-fg transition-colors">
-            Portfolio
-          </Link>
-          <Link href="/resume" className="text-muted hover:text-fg transition-colors">
-            Resume
-          </Link>
-          <Link href="/tools" className="text-muted hover:text-fg transition-colors">
-            Tools & AI
-          </Link>
+    <div style={{ position: "relative", minHeight: "100vh" }}>
+      <AmbientBackground />
+
+      <Masthead
+        navLinks={[
+          { label: "About",      href: "#about" },
+          { label: "My Work",    href: "#work" },
+          { label: "Playground", href: "#playground" },
+          { label: "Resume",     href: "/resume" },
+          { label: "Contact",    href: "#contact" },
+        ]}
+      />
+
+      {/* § 01 Hero */}
+      <section className="hero shell rev" id="hero">
+        <div className="issue">
+          <span className="bar" />
+          VOL · 02 / 2026 · QUARTERLY
+          <span className="bar" />
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <main className="container mx-auto px-6 py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="font-display text-5xl md:text-7xl font-medium text-fg tracking-tight mb-6">
-            Hi, I&apos;m <span className="text-accent">Lei Yang</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-fg mb-6 leading-relaxed max-w-3xl mx-auto">
-            For nearly 20 years, I&apos;ve animated the characters players
-            fight, follow, protect, and remember.
-          </p>
-          <p className="text-lg text-muted mb-6 max-w-2xl mx-auto leading-relaxed">
-            Across nine shipped <em className="mr-1">Call of Duty</em> titles, specializing in
-            gameplay animation, NPC animation systems, and mocap direction. My
-            work lives where animation, design, and engineering meet, turning
-            performance, systems, and gameplay needs into characters that feel
-            alive in the player&apos;s hands.
-          </p>
-          <p className="text-lg text-muted mb-12 max-w-2xl mx-auto leading-relaxed">
-            Now I&apos;m exploring how AI tools can push that work even
-            further, faster prototyping, smarter workflows, and new ways to
-            build believable interactive characters.
-          </p>
+        <h1 className="hero-h">
+          For nearly 20 years,<br />
+          <span className="it">I&apos;ve animated the characters</span><br />
+          <span className="quiet">players fight, follow, protect, and remember.</span>
+        </h1>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/portfolio"
-              className="bg-accent hover:bg-accent-hover text-page hover:text-fg px-8 py-3 rounded-lg font-semibold transition-colors"
-            >
-              View My Work
-            </Link>
-            <Link
-              href="/tools"
-              className="border border-accent text-accent hover:bg-accent hover:text-page px-8 py-3 rounded-lg font-semibold transition-colors"
-            >
-              Try My Tools
-            </Link>
+        <p className="hero-lede">
+          Across nine shipped <em>Call of Duty</em> titles, specializing in
+          gameplay animation, NPC animation systems, and mocap direction.
+        </p>
+
+        <div className="ctas">
+          <a className="btn btn-primary" href="#work">
+            View the reel <span className="arr">→</span>
+          </a>
+          <a className="btn" href="#playground">
+            Enter playground <span className="arr">→</span>
+          </a>
+        </div>
+
+        <div className="credits">
+          {CREDITS.map((c) => (
+            <div className="credit" key={c.k}>
+              <div className="credit-k">{c.k}</div>
+              <div className="credit-v">
+                {c.v}
+                <small>{c.s}</small>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* § 02 About */}
+      <section className="s rev" id="about">
+        <div className="shell">
+          <div className="s-marg">
+            <div className="s-num">§ 02</div>
+            <div className="s-titlewrap">
+              <div className="s-kicker">A dossier</div>
+              <h2 className="s-title">The <span className="it">animator</span></h2>
+            </div>
+          </div>
+
+          <div className="about-body">
+            <div className="about-spacer" />
+            <div className="about-prose">
+              <p>
+                <span className="drop">M</span>y work lives where animation,
+                design, and engineering meet — turning performance, systems, and
+                gameplay needs into characters that feel alive in the
+                player&apos;s hands.
+              </p>
+              <p>
+                Now I&apos;m exploring how <em>AI tools</em> can push that work
+                even further: faster prototyping, smarter workflows, and new
+                ways to build believable interactive characters.
+              </p>
+            </div>
+            <div className="about-meta">
+              <div className="meta-block">
+                <div className="meta-k">Most Recently</div>
+                <div className="meta-v">
+                  Lead AI Animator
+                  <small>Infinity Ward · MW II &amp; MW III</small>
+                </div>
+              </div>
+              <div className="meta-block">
+                <div className="meta-k">Specialties</div>
+                <div className="pills">
+                  {["Gameplay anim", "NPC systems", "Mocap direction", "Pipeline", "AI / ML R&D"].map((s) => (
+                    <span className="pill" key={s}>{s}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="meta-block">
+                <div className="meta-k">Stack</div>
+                <div className="pills">
+                  {["Maya", "MEL scripting", "MotionBuilder", "Game engines"].map((s) => (
+                    <span className="pill" key={s}>{s}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Quick Links Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mt-20 max-w-4xl mx-auto">
-          <Link href="/portfolio" className="group">
-            <div className="bg-surface border border-rule rounded-xl p-6 hover:border-accent transition-colors duration-300 h-full">
-              <div className="text-4xl mb-4">🎬</div>
-              <h3 className="text-xl font-semibold text-fg mb-2">Animation Portfolio</h3>
-              <p className="text-muted">Explore my animation demos and creative projects</p>
+      {/* § 03 My Work */}
+      <section className="s rev" id="work">
+        <div className="shell">
+          <div className="s-marg">
+            <div className="s-num">§ 03</div>
+            <div className="s-titlewrap">
+              <div className="s-kicker">Portfolio · selected work</div>
+              <h2 className="s-title">My <span className="it">Work</span></h2>
             </div>
-          </Link>
+          </div>
 
-          <Link href="/resume" className="group">
-            <div className="bg-surface border border-rule rounded-xl p-6 hover:border-accent transition-colors duration-300 h-full">
-              <div className="text-4xl mb-4">📄</div>
-              <h3 className="text-xl font-semibold text-fg mb-2">Resume & CV</h3>
-              <p className="text-muted">Professional experience and skills</p>
-            </div>
-          </Link>
+          <div className="play-grid" style={{ gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}>
+            <a className="pcard" href="/portfolio/game-animation">
+              <div className="pcard-art">
+                <ReelArt />
+              </div>
+              <div className="pcard-body">
+                <div className="pcard-kind">
+                  <span className="pip" />ANIMATION · REEL · 01
+                </div>
+                <h3 className="pcard-name">
+                  Game <span className="it">Animation</span>
+                </h3>
+                <p className="pcard-desc">
+                  Nine shipped Call of Duty titles. Gameplay animation, NPC
+                  systems, mocap direction, and AI-assisted pipeline work.
+                </p>
+                <div className="pcard-foot">
+                  <span className="pcard-launch">View reel <span className="arr">→</span></span>
+                </div>
+              </div>
+            </a>
 
-          <Link href="/tools" className="group">
-            <div className="bg-surface border border-rule rounded-xl p-6 hover:border-accent transition-colors duration-300 h-full">
-              <div className="text-4xl mb-4">🤖</div>
-              <h3 className="text-xl font-semibold text-fg mb-2">AI Tools & Agents</h3>
-              <p className="text-muted">Personal tools and AI-powered solutions</p>
-            </div>
-          </Link>
+            <a className="pcard" href="/portfolio/drawings">
+              <div className="pcard-art">
+                <DrawingsArt />
+              </div>
+              <div className="pcard-body">
+                <div className="pcard-kind">
+                  <span className="pip" />ART · DRAWINGS · 02
+                </div>
+                <h3 className="pcard-name">
+                  2D <span className="it">Art</span>
+                </h3>
+                <p className="pcard-desc">
+                  Personal drawings and sketches — characters, studies, and
+                  explorations outside the game pipeline.
+                </p>
+                <div className="pcard-foot">
+                  <span className="pcard-launch">View gallery <span className="arr">→</span></span>
+                </div>
+              </div>
+            </a>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* § 04 Playground */}
+      <section className="s rev" id="playground">
+        <div className="shell">
+          <div className="s-marg">
+            <div className="s-num">§ 04</div>
+            <div className="s-titlewrap">
+              <div className="s-kicker">Side projects · tools · experiments</div>
+              <h2 className="s-title">The <span className="it">playground</span></h2>
+            </div>
+          </div>
+
+          <div className="play-grid" style={{ gridTemplateColumns: "minmax(0, 480px)" }}>
+            <a className="pcard" href="/tools/purchasing-power">
+              <div className="pcard-art" style={{ maxHeight: "160px" }}>
+                <PowerArt />
+              </div>
+              <div className="pcard-body">
+                <div className="pcard-kind">
+                  <span className="pip" />AI Tool · TOOL · 01
+                </div>
+                <h3 className="pcard-name">
+                  Purchasing <span className="it">Power</span>
+                </h3>
+                <p className="pcard-desc">
+                  An interactive CPI calculator that shows how inflation erodes
+                  purchasing power over time. Pulls live data from the Federal
+                  Reserve and Bureau of Labor Statistics.
+                </p>
+                <div className="pcard-foot">
+                  <span className="pcard-launch">
+                    Launch <span className="arr">→</span>
+                  </span>
+                  <span className="pcard-status">Live · v1.0</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="text-center py-8 text-muted">
-        <p>&copy; 2026 Lei Yang. Built with Next.js & deployed on Vercel.</p>
+      <footer className="foot rev" id="contact">
+        <div className="shell">
+          <div className="foot-grid">
+            <div>
+              <div className="foot-call">
+                Got a character<br />
+                that needs to <em>feel alive?</em>
+              </div>
+              <a className="foot-mail" href="mailto:lei@leiyang.me">
+                lei@leiyang.me →
+              </a>
+            </div>
+            <div>
+              <div className="foot-list-k">Channels</div>
+              <ul className="foot-list">
+                <li><a href="https://linkedin.com/in/lei-yang" target="_blank" rel="noopener noreferrer">LinkedIn <span className="arr">↗</span></a></li>
+                <li><a href="https://vimeo.com/1188283054" target="_blank" rel="noopener noreferrer">Vimeo Reel <span className="arr">↗</span></a></li>
+              </ul>
+            </div>
+            <div>
+              <div className="foot-list-k">Pages</div>
+              <ul className="foot-list">
+                <li><a href="#work">Selected reel <span className="arr">→</span></a></li>
+                <li><a href="#playground">Playground <span className="arr">→</span></a></li>
+                <li><a href="/portfolio/drawings">2D Art <span className="arr">↗</span></a></li>
+                <li><a href="#about">About <span className="arr">→</span></a></li>
+                <li><a href="/resume">Resume / CV <span className="arr">↗</span></a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="foot-bottom">
+            <span>© 2026 Lei Yang</span>
+            <span>Los Angeles</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

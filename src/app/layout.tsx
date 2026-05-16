@@ -1,44 +1,58 @@
 import type { Metadata } from "next";
-import { Geist, Fraunces, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Bodoni_Moda, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
+  axes: ["opsz"],
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const bodoni = Bodoni_Moda({
+  variable: "--font-bodoni",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
   subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Lei Yang - Lead Animator & AI Developer",
-  description: "Lead Animator with 15+ years of AAA game development experience, including multiple shipped Call of Duty titles. Expert in AI animation systems, motion capture, and animation pipeline design.",
-  keywords: ["Lei Yang", "Lead Animator", "AI Animation", "Game Development", "Call of Duty", "Treyarch", "Motion Capture", "Animation Pipeline"],
+  title: "Lei Yang — Lead Animator",
+  description:
+    "Lead Animator with nearly 20 years of AAA game development experience. Nine shipped Call of Duty titles. Specialist in gameplay animation, NPC systems, mocap direction, and AI-assisted animation tooling.",
+  keywords: [
+    "Lei Yang",
+    "Lead Animator",
+    "AI Animation",
+    "Game Development",
+    "Call of Duty",
+    "Treyarch",
+    "Motion Capture",
+    "Animation Pipeline",
+  ],
   authors: [{ name: "Lei Yang" }],
   creator: "Lei Yang",
   openGraph: {
-    title: "Lei Yang - Lead Animator & AI Developer",
-    description: "Lead Animator with 15+ years of AAA game development experience, including multiple shipped Call of Duty titles.",
+    title: "Lei Yang — Lead Animator",
+    description:
+      "Lead Animator with nearly 20 years of AAA game development experience, including nine shipped Call of Duty titles.",
     url: "https://leiyang.me",
-    siteName: "Lei Yang Portfolio",
+    siteName: "Lei Yang · Atelier",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lei Yang - Lead Animator & AI Developer",
-    description: "Lead Animator with 15+ years of AAA game development experience, including multiple shipped Call of Duty titles.",
+    title: "Lei Yang — Lead Animator",
+    description:
+      "Lead Animator with nearly 20 years of AAA game development experience, including nine shipped Call of Duty titles.",
   },
 };
 
@@ -50,7 +64,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${fraunces.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${bricolage.variable} ${bodoni.variable} ${spaceMono.variable} antialiased`}
       >
         {children}
       </body>
