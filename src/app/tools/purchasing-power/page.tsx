@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import Masthead from '@/components/Masthead';
 import { PURCHASING_POWER_METADATA } from '@/constants/purchasing-power';
 import { formatNumberWithCommas, getNumericValue, formatCurrency, generateYearOptions } from '@/utils/formatting';
