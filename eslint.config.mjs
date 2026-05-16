@@ -17,6 +17,7 @@ export default [
       "next-env.d.ts",
       "*.config.js",
       "*.config.mjs",
+      "scripts/**",
     ],
   },
   {

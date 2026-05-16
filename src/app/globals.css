@@ -945,3 +945,394 @@ a {
   .foot-grid { grid-template-columns: 1fr; gap: 32px; }
   .foot-bottom { flex-direction: column; gap: 8px; text-align: center; }
 }
+
+/* ─── countries visited ─── */
+.cv-map-wrap {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 16px;
+  overflow: hidden;
+}
+
+.cv-map {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.cv-map:active { cursor: grabbing; }
+
+.cv-map-controls {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+}
+
+.cv-map-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--rule);
+  background: oklch(0.17 0.028 285 / 0.85);
+  color: var(--fg);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 6px;
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .15s, color .15s, background .15s;
+  padding: 0;
+}
+
+.cv-map-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cv-map-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cv-map-tooltip {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(12px, -50%);
+  background: oklch(0.17 0.028 285 / 0.95);
+  border: 1px solid var(--rule);
+  padding: 4px 10px;
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--fg);
+  white-space: nowrap;
+  border-radius: 4px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 3;
+}
+
+.cv-country {
+  fill: var(--elevated);
+  stroke: var(--rule);
+  stroke-width: 0.4;
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: fill .15s ease, stroke .15s ease;
+  outline: none;
+}
+
+.cv-country:hover {
+  fill: oklch(0.30 0.04 285);
+  stroke: var(--muted-2);
+}
+
+.cv-country:focus-visible {
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+
+.cv-country[data-visited="true"] {
+  fill: var(--accent);
+  stroke: var(--accent-hover);
+}
+
+.cv-country[data-visited="true"]:hover {
+  fill: var(--accent-hover);
+}
+
+.cv-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 24px 0;
+}
+
+.cv-action-row .cv-spacer { flex: 1; }
+
+.cv-seg {
+  display: inline-flex;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.cv-seg button {
+  padding: 8px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .2s, background .2s;
+}
+
+.cv-seg button:hover {
+  color: var(--fg);
+}
+
+.cv-seg button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--page);
+}
+
+.cv-stats-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) 1fr;
+  gap: 32px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+@media (max-width: 880px) {
+  .cv-stats-row { grid-template-columns: 1fr; gap: 24px; }
+}
+
+.cv-headline {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cv-headline-kicker {
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.cv-headline-pct {
+  font-family: var(--font-bricolage), ui-sans-serif, sans-serif;
+  font-weight: 600;
+  font-variation-settings: "opsz" 72;
+  font-size: clamp(72px, 9vw, 128px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--fg);
+}
+
+.cv-headline-pct .it {
+  font-family: var(--font-bodoni), ui-serif, Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--accent);
+  font-size: 0.55em;
+  margin-left: 4px;
+}
+
+.cv-headline-sub {
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+
+.cv-headline-sub b {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.cv-continents {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cv-continent-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px;
+  gap: 16px;
+  align-items: center;
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: .04em;
+}
+
+@media (max-width: 540px) {
+  .cv-continent-row { grid-template-columns: 100px 1fr 80px; gap: 10px; font-size: 10px; }
+}
+
+.cv-continent-name {
+  color: var(--fg);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+.cv-continent-bar {
+  position: relative;
+  height: 6px;
+  background: var(--elevated);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cv-continent-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left center;
+  transition: transform .35s ease;
+}
+
+.cv-continent-count {
+  color: var(--muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cv-continent-count b { color: var(--fg); font-weight: 500; }
+
+.cv-list {
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.cv-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.cv-list-title {
+  font-family: var(--font-bricolage), ui-sans-serif, sans-serif;
+  font-weight: 600;
+  font-variation-settings: "opsz" 60;
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.025em;
+  line-height: 1;
+  margin: 0;
+  color: var(--fg);
+}
+
+.cv-list-title .it {
+  font-family: var(--font-bodoni), ui-serif, Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--accent);
+}
+
+.cv-list-search {
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+  padding: 10px 16px;
+  background: var(--elevated);
+  border: 1px solid var(--rule);
+  color: var(--fg);
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: .04em;
+  outline: none;
+  transition: border-color .2s;
+}
+
+.cv-list-search::placeholder { color: var(--muted-2); }
+.cv-list-search:focus { border-color: var(--accent); }
+
+.cv-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 28px 32px;
+}
+
+.cv-list-col-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.cv-list-col-name { color: var(--accent); }
+.cv-list-col-count { color: var(--muted-2); font-variant-numeric: tabular-nums; }
+
+.cv-list-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cv-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .15s;
+}
+
+.cv-list-item:hover { color: var(--fg); }
+
+.cv-list-item input[type="checkbox"] {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--rule);
+  background: var(--elevated);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color .15s, background .15s;
+}
+
+.cv-list-item input[type="checkbox"]:hover {
+  border-color: var(--muted);
+}
+
+.cv-list-item input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.cv-list-item input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0;
+  width: 4px;
+  height: 8px;
+  border: solid var(--page);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+.cv-list-item input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.cv-list-item-name { user-select: none; }
+

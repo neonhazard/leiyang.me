@@ -149,6 +149,46 @@ function PowerArt() {
   );
 }
 
+function MapArt() {
+  return (
+    <svg
+      viewBox="0 0 400 225"
+      preserveAspectRatio="xMidYMid slice"
+      style={{ width: "100%", height: "100%", display: "block" }}
+    >
+      <defs>
+        <radialGradient id="mBg" cx="50%" cy="50%" r="65%">
+          <stop offset="0" stopColor="oklch(0.20 0.04 290)" />
+          <stop offset="1" stopColor="oklch(0.13 0.025 285)" />
+        </radialGradient>
+      </defs>
+      <rect width="400" height="225" fill="url(#mBg)" />
+      {[55, 90, 125, 160].map((y) => (
+        <line key={`lat-${y}`} x1="40" y1={y} x2="360" y2={y}
+          stroke="oklch(0.95 0.02 75)" strokeWidth="0.3" opacity="0.12" />
+      ))}
+      {[80, 120, 160, 200, 240, 280, 320].map((x) => (
+        <path key={`lng-${x}`}
+          d={`M ${x} 40 Q ${200 + (x - 200) * 0.7} 112 ${x} 185`}
+          stroke="oklch(0.95 0.02 75)" strokeWidth="0.3" opacity="0.10" fill="none" />
+      ))}
+      <ellipse cx="200" cy="112" rx="160" ry="72"
+        stroke="oklch(0.95 0.02 75)" strokeWidth="0.5" opacity="0.25" fill="none" />
+      {[
+        [110, 80], [150, 95], [190, 75], [225, 90], [260, 100],
+        [165, 130], [220, 140], [285, 125], [305, 145], [125, 145],
+      ].map(([cx, cy], i) => (
+        <circle key={i} cx={cx} cy={cy} r="3.5"
+          fill="var(--accent)" opacity="0.9" />
+      ))}
+      <text x="14" y="18" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="oklch(0.78 0.018 75)" letterSpacing="1">ATLAS · 1:50M</text>
+      <text x="328" y="18" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="var(--accent)" letterSpacing="1">N · 250</text>
+    </svg>
+  );
+}
+
 /* ── work card art ──────────────────────────────────────── */
 
 function ReelArt() {
@@ -395,7 +435,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="play-grid" style={{ gridTemplateColumns: "minmax(0, 480px)" }}>
+          <div className="play-grid">
             <a className="pcard" href="/tools/purchasing-power">
               <div className="pcard-art" style={{ maxHeight: "160px" }}>
                 <PowerArt />
@@ -411,6 +451,31 @@ export default function Home() {
                   An interactive CPI calculator that shows how inflation erodes
                   purchasing power over time. Pulls live data from the Federal
                   Reserve and Bureau of Labor Statistics.
+                </p>
+                <div className="pcard-foot">
+                  <span className="pcard-launch">
+                    Launch <span className="arr">→</span>
+                  </span>
+                  <span className="pcard-status">Live · v1.0</span>
+                </div>
+              </div>
+            </a>
+
+            <a className="pcard" href="/tools/countries-visited">
+              <div className="pcard-art" style={{ maxHeight: "160px" }}>
+                <MapArt />
+              </div>
+              <div className="pcard-body">
+                <div className="pcard-kind">
+                  <span className="pip" />Interactive · TOOL · 02
+                </div>
+                <h3 className="pcard-name">
+                  Countries <span className="it">Visited</span>
+                </h3>
+                <p className="pcard-desc">
+                  Click a country to mark it visited. Tracks your share of the
+                  world by count or by land area, with continent breakdowns and a
+                  UN-states filter. Saves locally — no account needed.
                 </p>
                 <div className="pcard-foot">
                   <span className="pcard-launch">
