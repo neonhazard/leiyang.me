@@ -27,3 +27,65 @@
 .slider-thumb::-moz-range-track {
   background: transparent;
 }
+
+/* Dual-range slider: two <input type="range"> stacked, transparent track,
+   visible draggable thumb. Track ignores pointer events so both inputs
+   coexist; thumb re-enables pointer events to remain draggable. */
+.dual-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.dual-range:focus {
+  outline: none;
+}
+
+.dual-range::-webkit-slider-runnable-track {
+  background: transparent;
+  border: none;
+  height: 100%;
+}
+
+.dual-range::-moz-range-track {
+  background: transparent;
+  border: none;
+  height: 100%;
+}
+
+.dual-range::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--page);
+  cursor: grab;
+  margin-top: 0;
+}
+
+.dual-range::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
+
+.dual-range::-moz-range-thumb {
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--page);
+  cursor: grab;
+}
+
+.dual-range::-moz-range-thumb:active {
+  cursor: grabbing;
+}

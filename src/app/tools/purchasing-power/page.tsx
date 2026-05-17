@@ -1,10 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Masthead from '@/components/Masthead';
 import { PURCHASING_POWER_METADATA } from '@/constants/purchasing-power';
-import { formatNumberWithCommas, getNumericValue, formatCurrency, generateYearOptions } from '@/utils/formatting';
+import { formatNumberWithCommas, getNumericValue, formatCurrency } from '@/utils/formatting';
 import { calculateSliderPosition, calculateRangeWidth } from '@/utils/slider';
+import MonthlyInflationCard from './components/MonthlyInflationCard';
+import CpiChart from './components/CpiChart';
+import CategoryBreakdown from './components/CategoryBreakdown';
+import CityComparisonTable from './components/CityComparisonTable';
+import CsvExportButton from './components/CsvExportButton';
 import '@/styles/slider.css';
 
 interface CalculationResult {
@@ -23,12 +29,35 @@ interface CalculationResult {
   actualLocation?: string;
 }
 
-export default function PurchasingPowerCalculator() {
-  const [amount, setAmount] = useState<string>('10000');
-  const [displayAmount, setDisplayAmount] = useState<string>('10,000');
-  const [fromYear, setFromYear] = useState<number>(1990);
-  const [toYear, setToYear] = useState<number>(new Date().getFullYear());
-  const [location, setLocation] = useState<string>('US');
+export default function PurchasingPowerPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-page" />}>
+      <PurchasingPowerCalculator />
+    </Suspense>
+  );
+}
+
+function PurchasingPowerCalculator() {
+  const searchParams = useSearchParams();
+  const currentYear = new Date().getFullYear();
+  const initialFromYear = (() => {
+    const p = parseInt(searchParams.get('fromYear') ?? '', 10);
+    return Number.isInteger(p) && p >= 1913 && p <= currentYear ? p : 1990;
+  })();
+  const initialAmount = (() => {
+    const p = parseFloat(searchParams.get('amount') ?? '');
+    return Number.isFinite(p) && p > 0 ? String(p) : '10000';
+  })();
+  const initialLocation = (() => {
+    const p = searchParams.get('location') ?? '';
+    return PURCHASING_POWER_METADATA.locations.some(l => l.id === p) ? p : 'US';
+  })();
+
+  const [amount, setAmount] = useState<string>(initialAmount);
+  const [displayAmount, setDisplayAmount] = useState<string>(formatNumberWithCommas(initialAmount));
+  const [fromYear, setFromYear] = useState<number>(initialFromYear);
+  const [toYear, setToYear] = useState<number>(currentYear);
+  const [location, setLocation] = useState<string>(initialLocation);
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -119,6 +148,9 @@ export default function PurchasingPowerCalculator() {
             </p>
           </div>
 
+          {/* Monthly Inflation Widget */}
+          <MonthlyInflationCard />
+
           {/* Calculator Form */}
           <div className="bg-surface border border-rule p-8 mb-8">
             <div className="grid md:grid-cols-2 gap-6">
@@ -169,110 +201,114 @@ export default function PurchasingPowerCalculator() {
                 </p>
               )}
 
-              {/* Visual Range Display */}
-              <div className="relative mb-6">
-                {(() => {
-                  const minYear = locationDateRange?.min || 1913;
-                  const maxYear = locationDateRange?.max || new Date().getFullYear();
-                  const fromPosition = calculateSliderPosition(fromYear, minYear, maxYear);
-                  const toPosition = calculateSliderPosition(toYear, minYear, maxYear);
-                  const rangeWidth = calculateRangeWidth(fromYear, toYear, minYear, maxYear);
+              {/* Visual Range Display with draggable handles */}
+              {(() => {
+                const minYear = locationDateRange?.min ?? 1913;
+                const maxYear = locationDateRange?.max ?? new Date().getFullYear();
+                const fromPosition = calculateSliderPosition(fromYear, minYear, maxYear);
+                const rangeWidth = calculateRangeWidth(fromYear, toYear, minYear, maxYear);
 
-                  return (
-                    <div className="relative h-2 bg-rule rounded-lg">
-                      {/* Background track */}
-                      <div className="absolute inset-0 h-2 bg-rule rounded-lg"></div>
+                return (
+                  <div className="relative mb-2" style={{ height: 32 }}>
+                    {/* Track */}
+                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-2 bg-rule rounded-lg" />
+                    {/* Active range */}
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 h-2 bg-accent rounded-lg"
+                      style={{ left: `${fromPosition}%`, width: `${rangeWidth}%` }}
+                    />
+                    {/* From handle */}
+                    <input
+                      type="range"
+                      min={minYear}
+                      max={maxYear}
+                      step={1}
+                      value={fromYear}
+                      onChange={(e) => {
+                        const v = Math.min(parseInt(e.target.value, 10), toYear);
+                        setFromYear(v);
+                      }}
+                      className="dual-range"
+                      aria-label="From year"
+                    />
+                    {/* To handle */}
+                    <input
+                      type="range"
+                      min={minYear}
+                      max={maxYear}
+                      step={1}
+                      value={toYear}
+                      onChange={(e) => {
+                        const v = Math.max(parseInt(e.target.value, 10), fromYear);
+                        setToYear(v);
+                      }}
+                      className="dual-range"
+                      aria-label="To year"
+                    />
+                  </div>
+                );
+              })()}
 
-                      {/* Active range track */}
-                      <div
-                        className="absolute h-2 bg-accent rounded-lg"
-                        style={{
-                          left: `${fromPosition}%`,
-                          width: `${rangeWidth}%`
-                        }}
-                      />
-
-                      {/* From Year Handle */}
-                      <div
-                        className="absolute w-4 h-4 bg-accent border-2 border-page rounded-full"
-                        style={{
-                          left: `${fromPosition}%`,
-                          transform: 'translateX(-50%) translateY(-25%)',
-                          top: '50%'
-                        }}
-                      />
-
-                      {/* To Year Handle */}
-                      <div
-                        className="absolute w-4 h-4 bg-accent border-2 border-page rounded-full"
-                        style={{
-                          left: `${toPosition}%`,
-                          transform: 'translateX(-50%) translateY(-25%)',
-                          top: '50%'
-                        }}
-                      />
-                    </div>
-                  );
-                })()}
-
-                {/* Slider Labels */}
-                <div className="flex justify-between text-xs text-muted mt-1">
-                  <span>{locationDateRange?.min || 1913}</span>
-                  <span className="text-fg font-semibold">
-                    {fromYear} - {toYear}
-                  </span>
-                  <span>{locationDateRange?.max || new Date().getFullYear()}</span>
-                </div>
+              {/* Slider Labels */}
+              <div className="flex justify-between text-xs text-muted mb-6">
+                <span>{locationDateRange?.min ?? 1913}</span>
+                <span className="text-fg font-semibold">
+                  {fromYear} – {toYear} ({toYear - fromYear} year{toYear - fromYear !== 1 ? 's' : ''})
+                </span>
+                <span>{locationDateRange?.max ?? new Date().getFullYear()}</span>
               </div>
 
-              {/* Year Dropdowns */}
+              {/* Year Inputs */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-muted text-sm mb-1">From Year</label>
-                  <select
+                  <input
+                    type="number"
+                    min={locationDateRange?.min ?? 1913}
+                    max={locationDateRange?.max ?? new Date().getFullYear()}
+                    step={1}
                     value={fromYear}
                     onChange={(e) => {
-                      const newFromYear = parseInt(e.target.value);
-                      if (newFromYear <= toYear) {
-                        setFromYear(newFromYear);
-                      }
+                      const v = parseInt(e.target.value, 10);
+                      if (Number.isInteger(v)) setFromYear(v);
                     }}
-                    className="w-full px-3 py-2 bg-elevated border border-rule text-fg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-                  >
-                    {locationDateRange && generateYearOptions(locationDateRange.min, locationDateRange.max).map((year) => (
-                      <option key={year} value={year} className="bg-elevated">
-                        {year}
-                      </option>
-                    ))}
-                  </select>
+                    onBlur={(e) => {
+                      const min = locationDateRange?.min ?? 1913;
+                      const max = locationDateRange?.max ?? new Date().getFullYear();
+                      const v = parseInt(e.target.value, 10);
+                      const clamped = Number.isInteger(v)
+                        ? Math.max(min, Math.min(v, Math.min(toYear, max)))
+                        : fromYear;
+                      setFromYear(clamped);
+                    }}
+                    className="w-full px-3 py-2 bg-elevated border border-rule text-fg focus:outline-none focus:ring-2 focus:ring-accent text-sm font-mono"
+                  />
                 </div>
 
                 <div>
                   <label className="block text-muted text-sm mb-1">To Year</label>
-                  <select
+                  <input
+                    type="number"
+                    min={locationDateRange?.min ?? 1913}
+                    max={locationDateRange?.max ?? new Date().getFullYear()}
+                    step={1}
                     value={toYear}
                     onChange={(e) => {
-                      const newToYear = parseInt(e.target.value);
-                      if (newToYear >= fromYear) {
-                        setToYear(newToYear);
-                      }
+                      const v = parseInt(e.target.value, 10);
+                      if (Number.isInteger(v)) setToYear(v);
                     }}
-                    className="w-full px-3 py-2 bg-elevated border border-rule text-fg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-                  >
-                    {locationDateRange && generateYearOptions(locationDateRange.min, locationDateRange.max).map((year) => (
-                      <option key={year} value={year} className="bg-elevated">
-                        {year}
-                      </option>
-                    ))}
-                  </select>
+                    onBlur={(e) => {
+                      const min = locationDateRange?.min ?? 1913;
+                      const max = locationDateRange?.max ?? new Date().getFullYear();
+                      const v = parseInt(e.target.value, 10);
+                      const clamped = Number.isInteger(v)
+                        ? Math.min(max, Math.max(v, Math.max(fromYear, min)))
+                        : toYear;
+                      setToYear(clamped);
+                    }}
+                    className="w-full px-3 py-2 bg-elevated border border-rule text-fg focus:outline-none focus:ring-2 focus:ring-accent text-sm font-mono"
+                  />
                 </div>
-              </div>
-
-              {/* Selection Summary */}
-              <div className="mt-3 text-center">
-                <span className="text-muted text-sm">
-                  {toYear - fromYear} year{toYear - fromYear !== 1 ? 's' : ''} selected
-                </span>
               </div>
             </div>
 
@@ -298,9 +334,17 @@ export default function PurchasingPowerCalculator() {
           {/* Results Display */}
           {result && (
             <div className="bg-surface border border-rule p-8">
-              <h2 className="text-2xl font-semibold text-fg mb-6 text-center">
-                Purchasing Power Results
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-fg">
+                  Purchasing Power Results
+                </h2>
+                <CsvExportButton
+                  location={location}
+                  fromYear={fromYear}
+                  toYear={toYear}
+                  amount={parseFloat(amount)}
+                />
+              </div>
 
               {/* Sample Data Notice */}
               {result.usingSampleData && (
@@ -408,6 +452,34 @@ export default function PurchasingPowerCalculator() {
                   )}
                 </p>
               </div>
+
+              {/* Historical CPI Chart */}
+              <div className="mt-6">
+                <CpiChart location={location} fromYear={fromYear} toYear={toYear} />
+              </div>
+            </div>
+          )}
+
+          {/* City Comparison */}
+          {result && (
+            <div className="mt-8">
+              <CityComparisonTable
+                amount={parseFloat(amount)}
+                fromYear={fromYear}
+                toYear={toYear}
+                highlightId={location}
+              />
+            </div>
+          )}
+
+          {/* Category Breakdown */}
+          {result && (
+            <div className="mt-8">
+              <CategoryBreakdown
+                amount={parseFloat(amount)}
+                fromYear={fromYear}
+                toYear={toYear}
+              />
             </div>
           )}
 

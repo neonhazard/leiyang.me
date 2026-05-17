@@ -7,6 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
+    "sync-cpi": "dotenv -e .env.local -- tsx src/lib/sync-cpi.ts",
     "precheck": "npm run lint && npm run build",
     "precommit": "npm run precheck",
     "prepare": "husky"
@@ -15,7 +16,8 @@
     "@neondatabase/serverless": "^1.0.2",
     "next": "^16.2.6",
     "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "react-dom": "^19.2.1",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -28,6 +30,7 @@
     "@types/topojson-client": "^3.1.5",
     "d3-geo": "^3.1.1",
     "d3-geo-projection": "^4.0.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "^16.0.7",
     "eslint-plugin-react": "^7.37.5",
@@ -36,6 +39,7 @@
     "lint-staged": "^16.2.3",
     "tailwindcss": "^4",
     "topojson-client": "^3.1.0",
+    "tsx": "^4.22.1",
     "typescript": "^5",
     "typescript-eslint": "^8.48.1",
     "world-atlas": "^2.0.2",
