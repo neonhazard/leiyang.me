@@ -8,6 +8,7 @@ interface CityRow {
   label: string;
   equivalentAmount: number | null;
   inflationRate: number | null;
+  fallbackUsed?: boolean;
 }
 
 interface Props {
@@ -72,6 +73,7 @@ export default function CityComparisonTable({ amount, fromYear, toYear, highligh
                   {r.label}
                   {r.id === 'US' && <span className="text-muted text-xs ml-2">(reference)</span>}
                   {r.id === highlightId && <span className="text-accent text-xs ml-2">(selected)</span>}
+                  {r.fallbackUsed && <span className="text-muted text-xs ml-2" title="Local metro CPI was missing for part of this range; regional or national CPI was used to bridge those years.">*</span>}
                 </td>
                 <td className="py-2 px-4 text-right text-fg font-mono">
                   {r.equivalentAmount != null ? formatCurrency(r.equivalentAmount) : '—'}
@@ -84,7 +86,9 @@ export default function CityComparisonTable({ amount, fromYear, toYear, highligh
           </tbody>
         </table>
       </div>
-      <p className="text-muted text-xs mt-3">Em-dash means CPI for that year/city isn&apos;t in the dataset (regional series start in 1965 and some have gaps).</p>
+      <p className="text-muted text-xs mt-3">
+        <span className="font-mono">*</span> indicates the local metro CPI was missing for part of the range and regional or national CPI filled the gap (chained year-over-year). Em-dash means no CPI tier had coverage.
+      </p>
     </div>
   );
 }

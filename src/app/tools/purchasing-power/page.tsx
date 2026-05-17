@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Masthead from '@/components/Masthead';
-import { PURCHASING_POWER_METADATA } from '@/constants/purchasing-power';
+import { PURCHASING_POWER_METADATA, MIN_YEAR } from '@/constants/purchasing-power';
 import { formatNumberWithCommas, getNumericValue, formatCurrency } from '@/utils/formatting';
 import { calculateSliderPosition, calculateRangeWidth } from '@/utils/slider';
 import MonthlyInflationCard from './components/MonthlyInflationCard';
@@ -47,7 +47,7 @@ function PurchasingPowerCalculator() {
   const currentYear = new Date().getFullYear();
   const initialFromYear = (() => {
     const p = parseInt(searchParams.get('fromYear') ?? '', 10);
-    return Number.isInteger(p) && p >= 1913 && p <= currentYear ? p : 1990;
+    return Number.isInteger(p) && p >= MIN_YEAR && p <= currentYear ? p : 1990;
   })();
   const initialAmount = (() => {
     const p = parseFloat(searchParams.get('amount') ?? '');
@@ -91,7 +91,7 @@ function PurchasingPowerCalculator() {
 
   useEffect(() => {
     if (location && metadata.dateRanges) {
-      setLocationDateRange(metadata.dateRanges[location] || { min: 1913, max: new Date().getFullYear() });
+      setLocationDateRange(metadata.dateRanges[location] || { min: MIN_YEAR, max: new Date().getFullYear() });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
@@ -222,16 +222,25 @@ function PurchasingPowerCalculator() {
               </label>
 
               {/* Local Coverage Info */}
-              {coverage && coverage[location] && (
-                <p className="text-muted text-sm mb-3">
-                  Local CPI data for {metadata.locations.find(l => l.id === location)?.name}: <span className="text-fg">{coverage[location].min}–{coverage[location].max}</span> ({coverage[location].years} years on record).
-                  {' '}Years outside this range fall back to {location === 'US' ? 'monthly interpolation' : 'regional or US National CPI'}.
-                </p>
-              )}
+              {coverage && coverage[location] && (() => {
+                const isUS = location === 'US';
+                const isRegion = metadata.locations.find(l => l.id === location)?.tier === 'region';
+                const fallbackText = isUS
+                  ? 'no fallback needed (US National is the base series).'
+                  : isRegion
+                    ? 'fall back to the US National CPI year-by-year.'
+                    : 'fall back to the regional, then US National CPI year-by-year.';
+                return (
+                  <p className="text-muted text-sm mb-3">
+                    Local CPI data for {metadata.locations.find(l => l.id === location)?.name}: <span className="text-fg">{coverage[location].min}–{coverage[location].max}</span> ({coverage[location].years} years on record).
+                    {' '}Years outside this range {fallbackText}
+                  </p>
+                );
+              })()}
 
               {/* Visual Range Display with draggable handles */}
               {(() => {
-                const minYear = locationDateRange?.min ?? 1913;
+                const minYear = locationDateRange?.min ?? MIN_YEAR;
                 const maxYear = locationDateRange?.max ?? new Date().getFullYear();
                 const fromPosition = calculateSliderPosition(fromYear, minYear, maxYear);
                 const rangeWidth = calculateRangeWidth(fromYear, toYear, minYear, maxYear);
@@ -279,7 +288,7 @@ function PurchasingPowerCalculator() {
 
               {/* Slider Labels */}
               <div className="flex justify-between text-xs text-muted mb-6">
-                <span>{locationDateRange?.min ?? 1913}</span>
+                <span>{locationDateRange?.min ?? MIN_YEAR}</span>
                 <span className="text-fg font-semibold">
                   {fromYear} – {toYear} ({toYear - fromYear} year{toYear - fromYear !== 1 ? 's' : ''})
                 </span>
@@ -292,7 +301,7 @@ function PurchasingPowerCalculator() {
                   <label className="block text-muted text-sm mb-1">From Year</label>
                   <input
                     type="number"
-                    min={locationDateRange?.min ?? 1913}
+                    min={locationDateRange?.min ?? MIN_YEAR}
                     max={locationDateRange?.max ?? new Date().getFullYear()}
                     step={1}
                     value={fromYear}
@@ -301,7 +310,7 @@ function PurchasingPowerCalculator() {
                       if (Number.isInteger(v)) setFromYear(v);
                     }}
                     onBlur={(e) => {
-                      const min = locationDateRange?.min ?? 1913;
+                      const min = locationDateRange?.min ?? MIN_YEAR;
                       const max = locationDateRange?.max ?? new Date().getFullYear();
                       const v = parseInt(e.target.value, 10);
                       const clamped = Number.isInteger(v)
@@ -317,7 +326,7 @@ function PurchasingPowerCalculator() {
                   <label className="block text-muted text-sm mb-1">To Year</label>
                   <input
                     type="number"
-                    min={locationDateRange?.min ?? 1913}
+                    min={locationDateRange?.min ?? MIN_YEAR}
                     max={locationDateRange?.max ?? new Date().getFullYear()}
                     step={1}
                     value={toYear}
@@ -326,7 +335,7 @@ function PurchasingPowerCalculator() {
                       if (Number.isInteger(v)) setToYear(v);
                     }}
                     onBlur={(e) => {
-                      const min = locationDateRange?.min ?? 1913;
+                      const min = locationDateRange?.min ?? MIN_YEAR;
                       const max = locationDateRange?.max ?? new Date().getFullYear();
                       const v = parseInt(e.target.value, 10);
                       const clamped = Number.isInteger(v)
@@ -505,29 +514,31 @@ function PurchasingPowerCalculator() {
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-xl font-semibold text-accent mb-4">Data Source</h3>
+                <h3 className="text-xl font-semibold text-accent mb-4">Data &amp; Coverage</h3>
                 <p className="text-muted mb-4">
-                  This calculator uses official Consumer Price Index (CPI) data from two authoritative sources:
+                  Official Consumer Price Index data covering <strong>1 national index, 4 census regions, 16 metropolitan areas,</strong> and <strong>7 spending categories</strong> (food, housing, apparel, transportation, medical, recreation, education).
                 </p>
                 <ul className="text-muted mb-4 list-disc list-inside space-y-2">
-                  <li><strong>Bureau of Labor Statistics (BLS)</strong> - For regional metropolitan area CPI data</li>
-                  <li><strong>Federal Reserve Economic Data (FRED)</strong> - For US National Average CPI data</li>
+                  <li><strong>FRED</strong> — US National Average and category series</li>
+                  <li><strong>BLS</strong> — Regional and metropolitan area series</li>
                 </ul>
                 <p className="text-muted">
-                  CPI measures the average change over time in the prices paid by urban consumers
-                  for a market basket of consumer goods and services.
+                  All CPI values are cached in Postgres and refreshed monthly after BLS releases new figures (mid-month), so the page loads instantly without hitting the agency APIs on every request.
                 </p>
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-accent mb-4">How It Works</h3>
+                <h3 className="text-xl font-semibold text-accent mb-4">How the Math Works</h3>
                 <p className="text-muted mb-4">
-                  The calculator uses the formula: <br />
-                  <code className="bg-elevated border border-rule px-2 py-1 rounded text-sm font-mono text-fg">
-                    Value in Year B = Value in Year A × (CPI Year B / CPI Year A)
-                  </code>
+                  Each year-over-year ratio is computed separately and chained together:
+                </p>
+                <code className="block bg-elevated border border-rule px-3 py-2 rounded text-sm font-mono text-fg mb-4">
+                  ratio = ∏ (CPI<sub>y</sub> / CPI<sub>y−1</sub>)
+                </code>
+                <p className="text-muted mb-4">
+                  Chaining year-over-year is necessary because metro CPI series and the national index use different reference bases (e.g., 2017=100 vs. 1982–84=100). Dividing across those bases directly would produce a meaningless number.
                 </p>
                 <p className="text-muted">
-                  This adjusts the monetary value based on changes in purchasing power over time.
+                  When a metro is missing CPI for some years (several BLS metro series start in 1965, 1978, or even 2017), the calculator falls back to the regional series, then to the national series — year by year, picking the deepest tier that has both endpoints. Rows that used fallback are marked with <span className="font-mono text-fg">*</span>.
                 </p>
               </div>
             </div>

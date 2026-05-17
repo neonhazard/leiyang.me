@@ -25,7 +25,7 @@ export interface CpiSeries {
 
 // Universal earliest year — backed by US National (which has data from 1947).
 // Fallback chain (metro -> region -> national) guarantees a value for every year >= 1947.
-const MIN_YEAR = 1947;
+export const MIN_YEAR = 1947;
 
 export const CITY_SERIES: Record<string, CpiSeries> = {
   US: { id: 'US', label: 'US National Average', seriesId: 'CPIAUCSL', source: 'FRED', tier: 'national' },

@@ -2,13 +2,11 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Masthead from '@/components/Masthead';
-import { HEADLINE_SERIES_ID } from '@/constants/purchasing-power';
+import { HEADLINE_SERIES_ID, MIN_YEAR } from '@/constants/purchasing-power';
 import { getAnnualAverage } from '@/lib/cpi';
 import { formatCurrency } from '@/utils/formatting';
 import CpiChart from '../components/CpiChart';
 import CityComparisonTable from '../components/CityComparisonTable';
-
-const MIN_YEAR = 1947;
 
 export const revalidate = 86400;
 

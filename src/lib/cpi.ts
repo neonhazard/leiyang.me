@@ -314,40 +314,69 @@ export async function getAnnualAverageWithFallback(
 
 export async function getCityComparison(amount: number, fromYear: number, toYear: number) {
   // National at the top as the reference, then metros. Regions live in the dropdown.
-  const metros = [
+  const cities = [
     CITY_SERIES.US,
     ...Object.values(CITY_SERIES).filter(s => s.tier === 'metro'),
   ];
-  const cityIds = metros.map(s => s.seriesId);
+
+  // Build each city's fallback chain (metro -> region -> national) and the
+  // union of every series id we'll need so we can fetch in one round-trip.
+  const chainsByCity = new Map<string, CpiSeries[]>();
+  const allSeriesIds = new Set<string>();
+  for (const city of cities) {
+    const chain: CpiSeries[] = [];
+    let cur: CpiSeries | undefined = city;
+    while (cur) {
+      chain.push(cur);
+      allSeriesIds.add(cur.seriesId);
+      cur = cur.parent ? CITY_SERIES[cur.parent] : undefined;
+    }
+    chainsByCity.set(city.id, chain);
+  }
+
+  const seriesIds = [...allSeriesIds];
   const rows = await sql`
     SELECT series_id, year, AVG(value)::numeric AS avg
     FROM cpi_observations
-    WHERE series_id = ANY(${cityIds}::text[])
-      AND year IN (${fromYear}, ${toYear})
+    WHERE series_id = ANY(${seriesIds}::text[])
+      AND year BETWEEN ${fromYear} AND ${toYear}
     GROUP BY series_id, year
   ` as Array<{ series_id: string; year: number; avg: string }>;
 
-  const bySeries = new Map<string, { from?: number; to?: number }>();
-  for (const r of rows) {
-    const v = parseFloat(r.avg);
-    const entry = bySeries.get(r.series_id) ?? {};
-    if (r.year === fromYear) entry.from = v;
-    if (r.year === toYear) entry.to = v;
-    bySeries.set(r.series_id, entry);
-  }
+  const bySeries = new Map<string, Map<number, number>>();
+  for (const id of seriesIds) bySeries.set(id, new Map());
+  for (const r of rows) bySeries.get(r.series_id)!.set(r.year, parseFloat(r.avg));
 
-  return metros.map(city => {
-    const v = bySeries.get(city.seriesId);
-    if (!v?.from || !v?.to) {
-      return { id: city.id, label: city.label, equivalentAmount: null, inflationRate: null };
+  return cities.map(city => {
+    const chain = chainsByCity.get(city.id)!;
+    if (fromYear === toYear) {
+      return { id: city.id, label: city.label, equivalentAmount: amount, inflationRate: 0, fallbackUsed: false };
     }
-    const equivalent = amount * (v.to / v.from);
-    const rate = ((v.to - v.from) / v.from) * 100;
+
+    let totalRatio = 1;
+    let fallbackUsed = false;
+    for (let y = fromYear + 1; y <= toYear; y++) {
+      let tier: CpiSeries | null = null;
+      for (const s of chain) {
+        const map = bySeries.get(s.seriesId)!;
+        if (map.has(y - 1) && map.has(y)) { tier = s; break; }
+      }
+      if (!tier) {
+        return { id: city.id, label: city.label, equivalentAmount: null, inflationRate: null, fallbackUsed: false };
+      }
+      if (tier.id !== city.id) fallbackUsed = true;
+      const map = bySeries.get(tier.seriesId)!;
+      totalRatio *= map.get(y)! / map.get(y - 1)!;
+    }
+
+    const equivalent = amount * totalRatio;
+    const rate = (totalRatio - 1) * 100;
     return {
       id: city.id,
       label: city.label,
       equivalentAmount: Math.round(equivalent * 100) / 100,
       inflationRate: Math.round(rate * 100) / 100,
+      fallbackUsed,
     };
   });
 }
