@@ -46,9 +46,12 @@ export default function CategoryBreakdown({ amount, fromYear, toYear }: Props) {
 
   return (
     <div className="bg-surface border border-rule p-6">
-      <h3 className="text-xl font-semibold text-fg mb-1">Category Breakdown</h3>
+      <h3 className="text-xl font-semibold text-fg mb-1">
+        Category Breakdown <span className="text-muted text-sm font-normal">· US National</span>
+      </h3>
       <p className="text-muted text-sm mb-4">
-        How {formatCurrency(amount)} from {fromYear} translates by spending category in {toYear}
+        How {formatCurrency(amount)} from {fromYear} translates by spending category in {toYear}.
+        Categories use national CPI series — independent of the city above, since BLS only publishes category breakdowns at the national level.
       </p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">

@@ -42,7 +42,10 @@ export default function CityComparisonTable({ amount, fromYear, toYear, highligh
   if (loading) return <div className="text-muted text-sm py-6 text-center">Loading city comparison…</div>;
   if (rows.length === 0) return null;
 
-  const sorted = [...rows].sort((a, b) => (b.inflationRate ?? -Infinity) - (a.inflationRate ?? -Infinity));
+  const usRow = rows.find(r => r.id === 'US');
+  const metroRows = rows.filter(r => r.id !== 'US');
+  const sortedMetros = metroRows.sort((a, b) => (b.inflationRate ?? -Infinity) - (a.inflationRate ?? -Infinity));
+  const sorted = usRow ? [usRow, ...sortedMetros] : sortedMetros;
 
   return (
     <div className="bg-surface border border-rule p-6">
@@ -63,10 +66,11 @@ export default function CityComparisonTable({ amount, fromYear, toYear, highligh
             {sorted.map(r => (
               <tr
                 key={r.id}
-                className={`border-b border-rule/40 ${r.id === highlightId ? 'bg-elevated' : ''}`}
+                className={`border-b ${r.id === 'US' ? 'border-rule bg-elevated/40' : 'border-rule/40'} ${r.id === highlightId ? 'bg-elevated' : ''}`}
               >
                 <td className="py-2 pr-4 text-fg">
                   {r.label}
+                  {r.id === 'US' && <span className="text-muted text-xs ml-2">(reference)</span>}
                   {r.id === highlightId && <span className="text-accent text-xs ml-2">(selected)</span>}
                 </td>
                 <td className="py-2 px-4 text-right text-fg font-mono">

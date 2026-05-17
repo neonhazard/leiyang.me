@@ -13,6 +13,16 @@ import CityComparisonTable from './components/CityComparisonTable';
 import CsvExportButton from './components/CsvExportButton';
 import '@/styles/slider.css';
 
+interface InflationPhase {
+  tier: 'national' | 'region' | 'metro';
+  label: string;
+  startYear: number;
+  endYear: number;
+  startCpi: number;
+  endCpi: number;
+  ratio: number;
+}
+
 interface CalculationResult {
   originalAmount: number;
   originalYear: number;
@@ -20,13 +30,8 @@ interface CalculationResult {
   location: string;
   equivalentAmount: number;
   inflationRate: number;
-  cpiData: {
-    fromCPI: number;
-    toCPI: number;
-  };
-  usingSampleData?: boolean;
-  usingFallbackData?: boolean;
-  actualLocation?: string;
+  ratio: number;
+  phases: InflationPhase[];
 }
 
 export default function PurchasingPowerPage() {
@@ -59,12 +64,19 @@ function PurchasingPowerCalculator() {
   const [toYear, setToYear] = useState<number>(currentYear);
   const [location, setLocation] = useState<string>(initialLocation);
   const [result, setResult] = useState<CalculationResult | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   const metadata = PURCHASING_POWER_METADATA;
 
   const [locationDateRange, setLocationDateRange] = useState<{min: number, max: number} | null>(null);
+  const [coverage, setCoverage] = useState<Record<string, { min: number; max: number; years: number }> | null>(null);
+
+  useEffect(() => {
+    fetch('/api/purchasing-power/coverage')
+      .then(r => r.ok ? r.json() : null)
+      .then(res => setCoverage(res?.coverage ?? null))
+      .catch(() => setCoverage(null));
+  }, []);
 
   const handleAmountChange = (value: string) => {
     try {
@@ -84,38 +96,43 @@ function PurchasingPowerCalculator() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
-  const handleCalculate = async () => {
-    setLoading(true);
-    setError('');
-    setResult(null);
+  // Auto-fetch the calculation whenever inputs change. Debounced so amount
+  // typing doesn't flood the API.
+  useEffect(() => {
+    const amountNum = parseFloat(amount);
+    if (!Number.isFinite(amountNum) || amountNum <= 0) return;
+    const range = metadata.dateRanges[location];
+    if (range && (fromYear < range.min || toYear > range.max || fromYear > toYear)) return;
 
-    try {
-      const response = await fetch('/api/purchasing-power', {
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      fetch('/api/purchasing-power', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: parseFloat(amount),
-          fromYear,
-          toYear,
-          location,
-        }),
-      });
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amountNum, fromYear, toYear, location }),
+        signal: controller.signal,
+      })
+        .then(async r => ({ ok: r.ok, data: await r.json() }))
+        .then(({ ok, data }) => {
+          if (controller.signal.aborted) return;
+          if (!ok) {
+            setError(data.error || 'Failed to calculate');
+          } else {
+            setError('');
+            setResult(data);
+          }
+        })
+        .catch(err => {
+          if (err?.name === 'AbortError') return;
+          setError(err instanceof Error ? err.message : 'An error occurred');
+        });
+    }, 300);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to calculate');
-      }
-
-      setResult(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [amount, fromYear, toYear, location, metadata.dateRanges]);
 
 
   return (
@@ -178,11 +195,21 @@ function PurchasingPowerCalculator() {
                   onChange={(e) => setLocation(e.target.value)}
                   className="w-full px-4 py-3 bg-elevated border border-rule text-fg focus:outline-none focus:ring-2 focus:ring-accent h-12"
                 >
-                  {metadata.locations.map((loc) => (
-                    <option key={loc.id} value={loc.id} className="bg-elevated">
-                      {loc.name}
-                    </option>
-                  ))}
+                  <optgroup label="National">
+                    {metadata.locations.filter(l => l.tier === 'national').map(loc => (
+                      <option key={loc.id} value={loc.id} className="bg-elevated">{loc.name}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Census Regions">
+                    {metadata.locations.filter(l => l.tier === 'region').map(loc => (
+                      <option key={loc.id} value={loc.id} className="bg-elevated">{loc.name}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Metropolitan Areas">
+                    {metadata.locations.filter(l => l.tier === 'metro').map(loc => (
+                      <option key={loc.id} value={loc.id} className="bg-elevated">{loc.name}</option>
+                    ))}
+                  </optgroup>
                 </select>
               </div>
 
@@ -194,10 +221,11 @@ function PurchasingPowerCalculator() {
                 Year Range
               </label>
 
-              {/* Available Data Range Info */}
-              {locationDateRange && (
+              {/* Local Coverage Info */}
+              {coverage && coverage[location] && (
                 <p className="text-muted text-sm mb-3">
-                  Available data: {locationDateRange.min} - {locationDateRange.max}
+                  Local CPI data for {metadata.locations.find(l => l.id === location)?.name}: <span className="text-fg">{coverage[location].min}–{coverage[location].max}</span> ({coverage[location].years} years on record).
+                  {' '}Years outside this range fall back to {location === 'US' ? 'monthly interpolation' : 'regional or US National CPI'}.
                 </p>
               )}
 
@@ -311,17 +339,6 @@ function PurchasingPowerCalculator() {
                 </div>
               </div>
             </div>
-
-            {/* Calculate Button */}
-            <div className="mt-8 text-center">
-              <button
-                onClick={handleCalculate}
-                disabled={loading || !amount || !metadata}
-                className="btn btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Calculating...' : 'Calculate Purchasing Power'}
-              </button>
-            </div>
           </div>
 
           {/* Error Display */}
@@ -346,22 +363,11 @@ function PurchasingPowerCalculator() {
                 />
               </div>
 
-              {/* Sample Data Notice */}
-              {result.usingSampleData && (
-                <div className="bg-yellow-500/15 border border-yellow-500/40 rounded-lg p-4 mb-6">
-                  <p className="text-yellow-300 text-sm">
-                    <strong>Demo Mode:</strong> Using sample CPI data. For real-time data, please add your FRED and BLS API keys to the environment variables.
-                  </p>
-                </div>
-              )}
-
-              {/* Fallback Data Notice */}
-              {result.usingFallbackData && (
-                <div className="bg-blue-500/15 border border-blue-500/40 rounded-lg p-4 mb-6">
-                  <p className="text-blue-300 text-sm">
-                    <strong>Note:</strong> Regional CPI data for {metadata.locations.find(l => l.id === result.location)?.name} is not available for the selected years.
-                    Showing US National Average data instead.
-                  </p>
+              {/* Chained inflation notice (only when multiple tiers/phases were used) */}
+              {result.phases.length > 1 && (
+                <div className="bg-elevated border-l-2 border-accent/60 p-3 mb-6 text-sm text-muted">
+                  <strong className="text-fg font-medium">Chained calculation:</strong>{' '}
+                  Inflation is computed year-by-year using the most-local CPI series available for each year pair, then multiplied through. This avoids mixing series with different reference bases. See the phase breakdown below.
                 </div>
               )}
 
@@ -399,31 +405,39 @@ function PurchasingPowerCalculator() {
                   </div>
 
                   <div className="bg-elevated border border-rule p-4">
-                    <h3 className="text-fg font-semibold mb-2">CPI Data</h3>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted">CPI {result.originalYear}</p>
-                        <p className="text-fg font-semibold">{result.cpiData.fromCPI}</p>
+                    <h3 className="text-fg font-semibold mb-2">
+                      {result.phases.length > 1 ? 'Calculation Phases' : 'CPI Data'}
+                    </h3>
+                    {result.phases.length === 0 ? (
+                      <p className="text-muted text-sm">Same year — no inflation to apply.</p>
+                    ) : (
+                      <div className="space-y-2 text-sm">
+                        {result.phases.map((p, i) => (
+                          <div key={i} className="flex justify-between gap-2 border-b border-rule/30 last:border-0 pb-1.5 last:pb-0">
+                            <div>
+                              <p className="text-fg">{p.startYear}{p.startYear !== p.endYear ? `–${p.endYear}` : ''}</p>
+                              <p className="text-muted text-xs">{p.label}</p>
+                            </div>
+                            <div className="text-right font-mono">
+                              <p className="text-fg">{p.startCpi} → {p.endCpi}</p>
+                              <p className="text-accent text-xs">
+                                {p.ratio >= 1 ? '+' : ''}{((p.ratio - 1) * 100).toFixed(2)}%
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                        {result.phases.length > 1 && (
+                          <div className="flex justify-between pt-1 border-t border-rule">
+                            <span className="text-fg font-medium">Combined</span>
+                            <span className="text-accent font-mono font-semibold">
+                              {result.inflationRate >= 0 ? '+' : ''}{result.inflationRate.toFixed(2)}%
+                            </span>
+                          </div>
+                        )}
                       </div>
-                      <div>
-                        <p className="text-muted">CPI {result.targetYear}</p>
-                        <p className="text-fg font-semibold">{result.cpiData.toCPI}</p>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
-                  <div className="bg-elevated border border-rule p-4">
-                    <h3 className="text-fg font-semibold mb-2">Available Data Range</h3>
-                    <p className="text-muted text-sm">
-                      {locationDateRange ?
-                        `Data available from ${locationDateRange.min} to ${locationDateRange.max}` :
-                        'Date range information not available'
-                      }
-                    </p>
-                    <p className="text-muted text-xs mt-1">
-                      Note: Date ranges may vary by location and data source
-                    </p>
-                  </div>
                 </div>
               </div>
 
@@ -453,15 +467,16 @@ function PurchasingPowerCalculator() {
                 </p>
               </div>
 
-              {/* Historical CPI Chart */}
-              <div className="mt-6">
-                <CpiChart location={location} fromYear={fromYear} toYear={toYear} />
-              </div>
             </div>
           )}
 
-          {/* City Comparison */}
-          {result && (
+          {/* Historical CPI Chart — always visible */}
+          <div className="mt-8">
+            <CpiChart location={location} fromYear={fromYear} toYear={toYear} />
+          </div>
+
+          {/* City Comparison — always visible */}
+          {Number.isFinite(parseFloat(amount)) && parseFloat(amount) > 0 && (
             <div className="mt-8">
               <CityComparisonTable
                 amount={parseFloat(amount)}
@@ -472,8 +487,8 @@ function PurchasingPowerCalculator() {
             </div>
           )}
 
-          {/* Category Breakdown */}
-          {result && (
+          {/* Category Breakdown — always visible */}
+          {Number.isFinite(parseFloat(amount)) && parseFloat(amount) > 0 && (
             <div className="mt-8">
               <CategoryBreakdown
                 amount={parseFloat(amount)}

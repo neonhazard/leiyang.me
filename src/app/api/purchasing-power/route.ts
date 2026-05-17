@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CITY_SERIES, PURCHASING_POWER_METADATA } from '@/constants/purchasing-power';
-import { getAnnualAverage } from '@/lib/cpi';
+import { getChainedInflation } from '@/lib/cpi';
 
 interface CalculationRequest {
   amount: number;
@@ -24,25 +24,20 @@ export async function POST(request: NextRequest) {
     if (fromYear > currentYear || toYear > currentYear) {
       return NextResponse.json({ error: 'Years cannot be in the future' }, { status: 400 });
     }
-    const series = CITY_SERIES[location];
-    if (!series) {
+    if (!CITY_SERIES[location]) {
       return NextResponse.json({ error: 'Invalid location' }, { status: 400 });
     }
 
-    const [fromCPI, toCPI] = await Promise.all([
-      getAnnualAverage(series.seriesId, fromYear),
-      getAnnualAverage(series.seriesId, toYear),
-    ]);
-
-    if (fromCPI == null || toCPI == null) {
+    const chained = await getChainedInflation(location, fromYear, toYear);
+    if (!chained) {
       return NextResponse.json(
-        { error: `CPI data not available for ${location} in ${fromCPI == null ? fromYear : toYear}. Try a different year or sync the database.` },
+        { error: `CPI data not available for ${location} in the range ${fromYear}-${toYear}.` },
         { status: 503 }
       );
     }
 
-    const equivalentAmount = amount * (toCPI / fromCPI);
-    const inflationRate = ((toCPI - fromCPI) / fromCPI) * 100;
+    const equivalentAmount = amount * chained.ratio;
+    const inflationRate = (chained.ratio - 1) * 100;
 
     return NextResponse.json({
       originalAmount: amount,
@@ -51,10 +46,13 @@ export async function POST(request: NextRequest) {
       location,
       equivalentAmount: Math.round(equivalentAmount * 100) / 100,
       inflationRate: Math.round(inflationRate * 100) / 100,
-      cpiData: {
-        fromCPI: Math.round(fromCPI * 100) / 100,
-        toCPI: Math.round(toCPI * 100) / 100,
-      },
+      ratio: chained.ratio,
+      phases: chained.phases.map(p => ({
+        ...p,
+        startCpi: Math.round(p.startCpi * 100) / 100,
+        endCpi: Math.round(p.endCpi * 100) / 100,
+        ratio: Math.round(p.ratio * 10000) / 10000,
+      })),
     });
   } catch (error) {
     console.error('Error calculating purchasing power:', error);
