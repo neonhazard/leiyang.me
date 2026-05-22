@@ -15,11 +15,11 @@ export const PROFILE_URLS = {
 };
 
 // Google Analytics 4 Measurement ID, e.g. "G-XXXXXXXXXX". Leave blank to disable.
-export const GA_MEASUREMENT_ID = "";
+export const GA_MEASUREMENT_ID = "G-8ZZW9FEXBH";
 
 // Google Search Console verification token (the content of the HTML-tag method).
 // Leave blank to omit the verification meta tag.
-export const GOOGLE_SITE_VERIFICATION = "";
+export const GOOGLE_SITE_VERIFICATION = "HayHNCzFHCEOr38fduaV8JC8W2pumilTvRMNUhaJek4";
 
 // Resolved list of valid sameAs URLs (placeholders filtered out).
 export const SAME_AS = Object.values(PROFILE_URLS).filter(
