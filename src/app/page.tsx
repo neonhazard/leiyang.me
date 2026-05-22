@@ -285,6 +285,10 @@ export default function Home() {
           <span className="quiet">players fight, follow, protect, and remember.</span>
         </h1>
 
+        <p className="hero-byline">
+          By <strong>Lei Yang</strong> · Call of Duty Lead Animator
+        </p>
+
         <p className="hero-lede">
           Across nine shipped <em>Call of Duty</em> titles, specializing in
           gameplay animation, NPC animation systems, and mocap direction.

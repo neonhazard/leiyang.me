@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ year: str
   return {
     title: `What is $100 in ${year} worth today? — Lei Yang`,
     description: `Calculate the purchasing power of US dollars from ${year} in today's terms using official CPI data from FRED and BLS.`,
+    alternates: { canonical: `/tools/purchasing-power/${year}` },
   };
 }
 

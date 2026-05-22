@@ -10,10 +10,12 @@ export default [
   ...tseslint.configs.recommended,
   {
     ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
+      "**/node_modules/**",
+      "**/.next/**",
+      "**/out/**",
+      "**/build/**",
+      ".claude/**",
+      "design_handoff_atelier/**",
       "next-env.d.ts",
       "*.config.js",
       "*.config.mjs",

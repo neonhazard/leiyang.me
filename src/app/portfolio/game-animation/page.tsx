@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Masthead from "@/components/Masthead";
+
+export const metadata: Metadata = {
+  title: "Game Animation Demo Reel",
+  description:
+    "Lei Yang's game animation demo reel — gameplay, NPC, and motion-capture work from nine shipped Call of Duty titles.",
+  alternates: { canonical: "/portfolio/game-animation" },
+};
 
 export default function GameAnimation() {
   return (

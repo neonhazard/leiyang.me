@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Masthead from "@/components/Masthead";
+
+export const metadata: Metadata = {
+  title: "Tools & Experiments",
+  description:
+    "Interactive side projects and experiments by Lei Yang — a US purchasing-power inflation calculator and a countries-visited world map.",
+  alternates: { canonical: "/tools" },
+};
 
 export default function Tools() {
   return (

@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Masthead from "@/components/Masthead";
+
+export const metadata: Metadata = {
+  title: "Resume",
+  description:
+    "Lei Yang's resume — Lead Animator with nearly 20 years of AAA game development experience across nine shipped Call of Duty titles, specializing in gameplay animation, NPC systems, and mocap direction.",
+  alternates: { canonical: "/resume" },
+};
 
 export default function Resume() {
   return (
