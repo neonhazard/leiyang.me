@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/tools", changeFrequency: "monthly", priority: 0.6 },
     { path: "/tools/purchasing-power", changeFrequency: "weekly", priority: 0.6 },
     { path: "/tools/countries-visited", changeFrequency: "monthly", priority: 0.5 },
+    { path: "/games/hailstone", changeFrequency: "monthly", priority: 0.5 },
   ];
 
   const entries: MetadataRoute.Sitemap = staticRoutes.map((route) => ({

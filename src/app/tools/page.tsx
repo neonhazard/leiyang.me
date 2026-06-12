@@ -5,7 +5,7 @@ import Masthead from "@/components/Masthead";
 export const metadata: Metadata = {
   title: "Tools & Experiments",
   description:
-    "Interactive side projects and experiments by Lei Yang — a US purchasing-power inflation calculator and a countries-visited world map.",
+    "Interactive side projects and experiments by Lei Yang — a US purchasing-power inflation calculator, a countries-visited world map, and Hailstone, a browser vertical shooter.",
   alternates: { canonical: "/tools" },
 };
 
@@ -107,6 +107,36 @@ export default function Tools() {
               </div>
             </div>
           </Link>
+
+          <Link
+            href="/games/hailstone"
+            className="pcard"
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <div
+              className="pcard-art"
+              style={{ aspectRatio: "16/9", background: "var(--surface)" }}
+            >
+              <HailstoneArt />
+            </div>
+            <div className="pcard-body">
+              <div className="pcard-kind">
+                <span className="pip" />Web Game · GAME · 03
+              </div>
+              <h3 className="pcard-name">
+                Hail<span className="it">stone</span>
+              </h3>
+              <p className="pcard-desc">
+                A steampunk vertical shooter built with Phaser 3. Dodge, shoot,
+                and survive the boss — right in your browser, no download
+                needed.
+              </p>
+              <div className="pcard-foot">
+                <span className="pcard-launch">Play <span className="arr">→</span></span>
+                <span className="pcard-status">Live · v1.0</span>
+              </div>
+            </div>
+          </Link>
         </div>
       </main>
     </div>
@@ -147,6 +177,79 @@ function PowerArt() {
         fill="oklch(0.78 0.018 75)" letterSpacing="1">CPI · INDEX</text>
       <text x="316" y="18" fontFamily="Space Mono, monospace" fontSize="8"
         fill="var(--accent)" letterSpacing="1">1913–2026</text>
+    </svg>
+  );
+}
+
+function HailstoneArt() {
+  // Stylized steampunk shooter scene — gear silhouettes, projectile trails.
+  return (
+    <svg
+      viewBox="0 0 400 225"
+      preserveAspectRatio="xMidYMid slice"
+      style={{ width: "100%", height: "100%", display: "block" }}
+    >
+      <defs>
+        <radialGradient id="hBgTools" cx="30%" cy="40%" r="75%">
+          <stop offset="0" stopColor="oklch(0.21 0.05 60)" />
+          <stop offset="1" stopColor="oklch(0.13 0.025 285)" />
+        </radialGradient>
+      </defs>
+      <rect width="400" height="225" fill="url(#hBgTools)" />
+      {/* Gear silhouettes */}
+      {[
+        [330, 60, 38],
+        [368, 110, 22],
+        [60, 180, 28],
+      ].map(([cx, cy, r], i) => (
+        <g key={i} opacity="0.18">
+          <circle cx={cx} cy={cy} r={r} stroke="oklch(0.95 0.02 75)" strokeWidth="1" fill="none" />
+          <circle cx={cx} cy={cy} r={r * 0.45} stroke="oklch(0.95 0.02 75)" strokeWidth="0.8" fill="none" />
+          {Array.from({ length: 8 }).map((_, t) => {
+            const a = (t * Math.PI) / 4;
+            return (
+              <line
+                key={t}
+                x1={cx + Math.cos(a) * r}
+                y1={cy + Math.sin(a) * r}
+                x2={cx + Math.cos(a) * (r + 6)}
+                y2={cy + Math.sin(a) * (r + 6)}
+                stroke="oklch(0.95 0.02 75)"
+                strokeWidth="2"
+              />
+            );
+          })}
+        </g>
+      ))}
+      {/* Player ship — nose up, climbing from the bottom */}
+      <path d="M 170 150 L 158 180 L 182 180 Z" fill="var(--accent)" opacity="0.9" />
+      {/* Engine exhaust */}
+      <line x1="170" y1="186" x2="170" y2="208"
+        stroke="var(--accent)" strokeWidth="1.5" opacity="0.3" strokeDasharray="4 4" />
+      {/* Projectile trails firing upward */}
+      {[
+        [160, 138, 96],
+        [170, 132, 64],
+        [180, 138, 104],
+      ].map(([x, y1, y2], i) => (
+        <line key={i} x1={x} y1={y1} x2={x} y2={y2}
+          stroke="var(--accent)" strokeWidth="1.5" opacity={i === 1 ? 0.75 : 0.5} strokeDasharray="10 7" />
+      ))}
+      {/* Hail falling from above */}
+      {[
+        [110, 48], [148, 84], [212, 40], [256, 70], [300, 100],
+      ].map(([cx, cy], i) => (
+        <g key={i} opacity="0.5">
+          <circle cx={cx} cy={cy} r={3 + (i % 3)}
+            stroke="oklch(0.95 0.02 75)" strokeWidth="1" fill="none" />
+          <line x1={cx} y1={cy - 16} x2={cx} y2={cy - 8}
+            stroke="oklch(0.95 0.02 75)" strokeWidth="1" opacity="0.6" />
+        </g>
+      ))}
+      <text x="14" y="18" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="oklch(0.78 0.018 75)" letterSpacing="1">HAILSTONE · PHASER 3</text>
+      <text x="340" y="18" fontFamily="Space Mono, monospace" fontSize="8"
+        fill="var(--accent)" letterSpacing="1">1P · WEB</text>
     </svg>
   );
 }

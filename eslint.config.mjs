@@ -14,6 +14,7 @@ export default [
       "**/.next/**",
       "**/out/**",
       "**/build/**",
+      "public/**",
       ".claude/**",
       "design_handoff_atelier/**",
       "next-env.d.ts",

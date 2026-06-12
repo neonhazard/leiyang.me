@@ -1,0 +1,183 @@
+{
+  "frames": {
+    "boss-steampunk-p1": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 506,
+        "h": 338
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 506,
+        "h": 338
+      },
+      "sourceSize": {
+        "w": 506,
+        "h": 338
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boss-steampunk-p2": {
+      "frame": {
+        "x": 512,
+        "y": 2,
+        "w": 506,
+        "h": 338
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 506,
+        "h": 338
+      },
+      "sourceSize": {
+        "w": 506,
+        "h": 338
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boss-steampunk-p3": {
+      "frame": {
+        "x": 1022,
+        "y": 2,
+        "w": 506,
+        "h": 338
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 506,
+        "h": 338
+      },
+      "sourceSize": {
+        "w": 506,
+        "h": 338
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "enemy-bomber-steampunk": {
+      "frame": {
+        "x": 1532,
+        "y": 2,
+        "w": 126,
+        "h": 126
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 126,
+        "h": 126
+      },
+      "sourceSize": {
+        "w": 126,
+        "h": 126
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "enemy-fighter-steampunk": {
+      "frame": {
+        "x": 1662,
+        "y": 2,
+        "w": 76,
+        "h": 102
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 76,
+        "h": 102
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 102
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "player-steampunk": {
+      "frame": {
+        "x": 1742,
+        "y": 2,
+        "w": 70,
+        "h": 104
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 70,
+        "h": 104
+      },
+      "sourceSize": {
+        "w": 70,
+        "h": 104
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "enemy-swooper-steampunk": {
+      "frame": {
+        "x": 1662,
+        "y": 108,
+        "w": 50,
+        "h": 92
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 50,
+        "h": 92
+      },
+      "sourceSize": {
+        "w": 50,
+        "h": 92
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://github.com/odrick/free-tex-packer-core",
+    "version": "0.3.8",
+    "image": "game-sprites-steampunk.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1814,
+      "h": 342
+    },
+    "scale": 1
+  }
+}
