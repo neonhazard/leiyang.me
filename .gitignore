@@ -39,6 +39,9 @@ yarn-error.log*
 # claude code (worktrees, local session artifacts)
 .claude/
 
+# design reference bundle (not part of the site)
+/design_handoff_atelier/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
