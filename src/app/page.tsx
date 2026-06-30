@@ -607,7 +607,7 @@ export default function Home() {
               <div className="foot-list-k">Channels</div>
               <ul className="foot-list">
                 <li><a href="https://linkedin.com/in/lei-yang" target="_blank" rel="noopener noreferrer">LinkedIn <span className="arr">↗</span></a></li>
-                <li><a href="https://vimeo.com/1188283054" target="_blank" rel="noopener noreferrer">Vimeo Reel <span className="arr">↗</span></a></li>
+                <li><a href="/portfolio/game-animation">Demo Reel <span className="arr">→</span></a></li>
               </ul>
             </div>
             <div>
