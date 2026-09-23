@@ -1,17 +1,51 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Masthead from "@/components/Masthead";
+import {
+  SITE_URL,
+  PERSON_EMAIL,
+  PROFILE_URLS,
+  CURRENT_ROLE,
+  SHIPPED_TITLES,
+  socialMetadata,
+} from "@/constants/site";
+
+const TITLE = "Resume · Principal Gameplay Animator";
+const DESCRIPTION =
+  "Lei Yang's resume — Principal Gameplay Animator at Tencent. Nearly 20 years in AAA games, including nine shipped Call of Duty titles at Infinity Ward, from Call of Duty 2 to Modern Warfare III.";
 
 export const metadata: Metadata = {
-  title: "Resume",
-  description:
-    "Lei Yang's resume — Lead Animator with nearly 20 years of AAA game development experience across nine shipped Call of Duty titles, specializing in gameplay animation, NPC systems, and mocap direction.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/resume" },
+  ...socialMetadata(TITLE, DESCRIPTION, "/resume"),
 };
+
+const creditsData = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Call of Duty titles animated by Lei Yang",
+  itemListElement: SHIPPED_TITLES.map((t, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    item: {
+      "@type": "VideoGame",
+      name: t.name,
+      datePublished: String(t.year),
+      sameAs: t.url,
+      contributor: { "@id": `${SITE_URL}/#person` },
+    },
+  })),
+};
+
 
 export default function Resume() {
   return (
     <div className="min-h-screen bg-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(creditsData) }}
+      />
       <Masthead />
 
       <main className="shell py-16">
@@ -81,12 +115,12 @@ export default function Resume() {
               }}
             >
               <span>661-755-0727</span>
-              <a href="mailto:lei@leiyang.me" style={{ color: "var(--accent)" }}>lei@leiyang.me</a>
-              <a href="https://linkedin.com/in/lei-yang" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
+              <a href={`mailto:${PERSON_EMAIL}`} style={{ color: "var(--accent)" }}>{PERSON_EMAIL}</a>
+              <a href={PROFILE_URLS.linkedin} target="_blank" rel="me noopener noreferrer" style={{ color: "var(--accent)" }}>
                 linkedin.com/in/lei-yang
               </a>
-              <a href="https://www.leiyang.me" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
-                leiyang.me
+              <a href={PROFILE_URLS.mobygames} target="_blank" rel="me noopener noreferrer" style={{ color: "var(--accent)" }}>
+                MobyGames
               </a>
             </div>
           </section>
@@ -107,7 +141,7 @@ export default function Resume() {
             </h2>
             <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
               {[
-                "Lead Animator with 15+ years of AAA game development experience, including multiple shipped Call of Duty titles",
+                "Principal Gameplay Animator with nearly 20 years of AAA game development experience, including nine shipped Call of Duty titles",
                 "Proven expertise in AI animation systems, motion capture direction, and animation pipeline design",
                 "Strong leader of distributed teams, mentoring animators across international studios to deliver high-quality results",
                 "Blends realism with cinematic impact to create immersive, responsive, and memorable gameplay experiences",
@@ -146,6 +180,14 @@ export default function Resume() {
               Experience
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
+
+              <ExperienceBlock
+                title={CURRENT_ROLE.title.toUpperCase()}
+                company={[CURRENT_ROLE.studio, CURRENT_ROLE.org].filter(Boolean).join(", ").toUpperCase()}
+                period={`${CURRENT_ROLE.since} – PRESENT`}
+                projects={[]}
+                bullets={[]}
+              />
 
               <ExperienceBlock
                 title="LEAD AI ANIMATOR"

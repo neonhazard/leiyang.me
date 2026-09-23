@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { PERSON_JOB_TITLE } from "@/constants/site";
 
 interface NavLink {
   label: string;
@@ -51,11 +52,10 @@ export default function Masthead({ navLinks }: MastheadProps) {
         </div>
         <div className="mast-r">
           <span>{utc}</span>
-          <span><b>● </b>open to projects</span>
         </div>
       </header>
       <div className="submast">
-        <span>Lead Animator</span>
+        <span>{PERSON_JOB_TITLE}</span>
         <nav>
           {links.map((l) => (
             <Link key={l.href} href={l.href}>{l.label}</Link>

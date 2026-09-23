@@ -2,12 +2,28 @@
 
 import { useEffect, useRef } from "react";
 import Masthead from "@/components/Masthead";
+import {
+  SITE_URL,
+  PERSON_EMAIL,
+  PERSON_JOB_TITLE,
+  PROFILE_URLS,
+  CURRENT_ROLE,
+  SHIPPED_TITLES,
+} from "@/constants/site";
 
 /* ── data ───────────────────────────────────────────────── */
 
+const profilePageData = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": `${SITE_URL}/#profilepage`,
+  url: SITE_URL,
+  mainEntity: { "@id": `${SITE_URL}/#person` },
+};
+
 const CREDITS = [
-  { k: "Director",    v: "Lei Yang",       s: "Lead Animator" },
-  { k: "Studio",      v: "Infinity Ward",  s: "Activision" },
+  { k: "Director",    v: "Lei Yang",       s: PERSON_JOB_TITLE },
+  { k: "Studio",      v: CURRENT_ROLE.org, s: "Previously Infinity Ward" },
   { k: "Filmography", v: "9 titles",       s: "Call of Duty franchise" },
   { k: "Locale",      v: "Los Angeles",    s: "California · USA" },
 ];
@@ -331,6 +347,10 @@ export default function Home() {
 
   return (
     <div style={{ position: "relative", minHeight: "100vh" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageData) }}
+      />
       <AmbientBackground />
 
       <Masthead
@@ -358,12 +378,13 @@ export default function Home() {
         </h1>
 
         <p className="hero-byline">
-          By <strong>Lei Yang</strong> · Call of Duty Lead Animator
+          By <strong>Lei Yang</strong> · {PERSON_JOB_TITLE}
         </p>
 
         <p className="hero-lede">
-          Across nine shipped <em>Call of Duty</em> titles, specializing in
-          gameplay animation, NPC animation systems, and mocap direction.
+          Nine shipped <em>Call of Duty</em> titles at Infinity Ward, now at
+          {" "}{CURRENT_ROLE.org} — specializing in gameplay animation, NPC
+          animation systems, and mocap direction.
         </p>
 
         <div className="ctas">
@@ -416,11 +437,28 @@ export default function Home() {
             </div>
             <div className="about-meta">
               <div className="meta-block">
-                <div className="meta-k">Most Recently</div>
+                <div className="meta-k">Currently</div>
+                <div className="meta-v">
+                  {CURRENT_ROLE.title}
+                  <small>{CURRENT_ROLE.studio || CURRENT_ROLE.org}</small>
+                </div>
+              </div>
+              <div className="meta-block">
+                <div className="meta-k">Previously</div>
                 <div className="meta-v">
                   Lead AI Animator
-                  <small>Infinity Ward · MW II &amp; MW III</small>
+                  <small>Infinity Ward · Modern Warfare II &amp; III</small>
                 </div>
+              </div>
+              <div className="meta-block">
+                <div className="meta-k">Shipped titles</div>
+                <ul className="meta-v" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                  {SHIPPED_TITLES.map((t) => (
+                    <li key={t.name}>
+                      <small>{t.name} · {t.year}</small>
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div className="meta-block">
                 <div className="meta-k">Specialties</div>
@@ -599,14 +637,15 @@ export default function Home() {
                 Got a character<br />
                 that needs to <em>feel alive?</em>
               </div>
-              <a className="foot-mail" href="mailto:lei@leiyang.me">
-                lei@leiyang.me →
+              <a className="foot-mail" href={`mailto:${PERSON_EMAIL}`}>
+                {PERSON_EMAIL} →
               </a>
             </div>
             <div>
               <div className="foot-list-k">Channels</div>
               <ul className="foot-list">
-                <li><a href="https://linkedin.com/in/lei-yang" target="_blank" rel="noopener noreferrer">LinkedIn <span className="arr">↗</span></a></li>
+                <li><a href={PROFILE_URLS.linkedin} target="_blank" rel="me noopener noreferrer">LinkedIn <span className="arr">↗</span></a></li>
+                <li><a href={PROFILE_URLS.mobygames} target="_blank" rel="me noopener noreferrer">MobyGames credits <span className="arr">↗</span></a></li>
                 <li><a href="/portfolio/game-animation">Demo Reel <span className="arr">→</span></a></li>
               </ul>
             </div>
