@@ -718,6 +718,9 @@ a {
   letter-spacing: -0.02em;
   color: var(--fg);
   max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
+  text-wrap: balance;
 }
 
 .quotemark {
@@ -739,6 +742,7 @@ a {
   letter-spacing: .08em;
   color: var(--muted-2);
   text-transform: uppercase;
+  text-align: center;
 }
 
 /* ─── playground ─── */

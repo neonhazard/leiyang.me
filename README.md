@@ -1,97 +1,63 @@
-# Lei Yang - Personal Website
+# leiyang.me
 
-A modern personal website built with Next.js, featuring portfolio, resume, and AI tools. Deployed on Vercel with custom domain support.
+Personal site of Lei Yang, Principal Gameplay Animator. Built with Next.js and deployed on Vercel at [leiyang.me](https://leiyang.me).
 
-## 🌟 Features
+## What's on the site
 
-- **Portfolio Showcase** - Animation demos and creative projects
-- **Professional Resume** - Experience, skills, and education
-- **AI Tools & Agents** - Personal tools and AI-powered solutions
-- **Responsive Design** - Beautiful, mobile-friendly interface
-- **API Integration** - Backend services for AI tools
-- **Custom Domain** - Configured for leiyang.me
+- **Home** (`/`) — "Atelier" editorial layout: hero, about, selected work, playground, contact.
+- **Game animation** (`/portfolio/game-animation`) — Call of Duty work, with the demo reel behind a password gate (videos served from Cloudflare R2 via signed URLs).
+- **2D art** (`/portfolio/drawings`) — drawing gallery with a lightbox.
+- **Resume** (`/resume`) — experience, skills, and a downloadable PDF.
+- **Playground** (`/tools`):
+  - **Purchasing Power** (`/tools/purchasing-power`) — US CPI inflation calculator with city and category breakdowns. Data from BLS and FRED, cached in Neon Postgres and refreshed monthly by a Vercel cron job.
+  - **Countries Visited** (`/tools/countries-visited`) — clickable world map; progress is saved in the browser.
+  - **Hailstone** (`/games/hailstone`) — Phaser 3 vertical shooter, served as a static build from `public/games/hailstone`.
+- **SEO** — sitemap, robots, Open Graph image, Person JSON-LD, and `/llms.txt`, all driven by `src/constants/site.ts`.
 
-## 🛠️ Tech Stack
+## Tech stack
 
-- **Framework**: Next.js 16 with App Router
-- **Styling**: Tailwind CSS
-- **Language**: TypeScript
-- **Deployment**: Vercel
-- **Domain**: leiyang.me
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Recharts · d3-geo · Neon Postgres · Cloudflare R2 · Vercel
 
-## 🚀 Getting Started
+## Getting started
 
-### Prerequisites
-- Node.js 20.9+ (required for Next.js 16) 
-- npm or yarn
+Requires Node.js 20.9+.
 
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/neonhazard/leiyang.me.git
-cd leiyang.me
-```
-
-2. Install dependencies:
 ```bash
 npm install
-```
-
-3. Run the development server:
-```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Then open http://localhost:3000.
 
-## 📁 Project Structure
+### Environment variables
 
-```
-leiyang.me/
-├── src/
-│   ├── app/
-│   │   ├── portfolio/          # Animation portfolio page
-│   │   ├── resume/            # Resume and experience
-│   │   ├── tools/             # AI tools and agents
-│   │   ├── api/               # API routes
-│   │   └── page.tsx           # Homepage
-│   └── components/            # Reusable components
-├── public/                    # Static assets
-└── package.json
-```
+Put these in `.env.local` (and in the Vercel project settings for production):
 
-## 🤖 AI Tools & APIs
+| Variable | Used for |
+| --- | --- |
+| `DATABASE_URL` | Neon Postgres connection (CPI cache) |
+| `BLS_API_KEY`, `FRED_API_KEY` | CPI data sources |
+| `CRON_SECRET` | Authenticates the `/api/cron/sync-cpi` job |
+| `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` | Cloudflare R2 access for the demo reel |
+| `R2_REEL_KEY_1`, `R2_REEL_TITLE_1`, `R2_REEL_KEY_2`, `R2_REEL_TITLE_2` | Reel video objects and titles |
+| `REEL_PASSWORD` | Password for the reel gate |
 
-- **Color Palette AI** - Generate harmonious color schemes
-- **Animation Assistant** - AI-powered animation suggestions
-- **Portfolio Generator** - Automated content creation
-- **Resume Analyzer** - AI resume optimization
+## Scripts
 
-## 🌐 Deployment
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` / `npm start` | Production build and server |
+| `npm run lint` | ESLint |
+| `npm run sync-cpi` | Pull the latest CPI data into the database |
+| `node scripts/build-world-data.mjs` | Regenerate the world map data in `src/constants/` |
 
-This project is automatically deployed to Vercel on every push to the main branch.
+The database schema is in `scripts/init-db.sql`. A Husky pre-commit hook runs lint and build.
 
-### Custom Domain Setup
-1. Add your domain in Vercel dashboard
-2. Configure DNS settings
-3. SSL certificate is automatically provisioned
+## Updating career details
 
-## 🔄 Development Workflow
+Job title, employer, shipped titles, and profile links live in `src/constants/site.ts`. Metadata, structured data, and `/llms.txt` all read from there, so update that file first.
 
-1. **Code** with Cursor AI assistance
-2. **Commit** changes to Git
-3. **Push** to GitHub
-4. **Deploy** automatically via Vercel
+## Contact
 
-*Last updated: January 2025*
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 📧 Contact
-
-- **Email**: neonhazard@gmail.com
-- **Website**: [leiyang.me](https://leiyang.me)
-- **GitHub**: [@neonhazard](https://github.com/neonhazard)
+[lei@leiyang.me](mailto:lei@leiyang.me) · [leiyang.me](https://leiyang.me)

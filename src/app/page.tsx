@@ -9,6 +9,7 @@ import {
   PROFILE_URLS,
   CURRENT_ROLE,
   SHIPPED_TITLES,
+  UNCREDITED_TITLES,
 } from "@/constants/site";
 
 /* ── data ───────────────────────────────────────────────── */
@@ -22,7 +23,7 @@ const profilePageData = {
 };
 
 const CREDITS = [
-  { k: "Director",    v: "Lei Yang",       s: PERSON_JOB_TITLE },
+  { k: "Role",        v: PERSON_JOB_TITLE, s: `Since ${CURRENT_ROLE.since}` },
   { k: "Studio",      v: CURRENT_ROLE.org, s: "Previously Infinity Ward" },
   { k: "Filmography", v: "9 titles",       s: "Call of Duty franchise" },
   { k: "Locale",      v: "Los Angeles",    s: "California · USA" },
@@ -440,14 +441,14 @@ export default function Home() {
                 <div className="meta-k">Currently</div>
                 <div className="meta-v">
                   {CURRENT_ROLE.title}
-                  <small>{CURRENT_ROLE.studio || CURRENT_ROLE.org}</small>
+                  <small>{[CURRENT_ROLE.studio, CURRENT_ROLE.org].filter(Boolean).join(" · ")}</small>
                 </div>
               </div>
               <div className="meta-block">
                 <div className="meta-k">Previously</div>
                 <div className="meta-v">
                   Lead AI Animator
-                  <small>Infinity Ward · Modern Warfare II &amp; III</small>
+                  <small>Infinity Ward · Modern Warfare II, III &amp; 4</small>
                 </div>
               </div>
               <div className="meta-block">
@@ -456,6 +457,11 @@ export default function Home() {
                   {SHIPPED_TITLES.map((t) => (
                     <li key={t.name}>
                       <small>{t.name} · {t.year}</small>
+                    </li>
+                  ))}
+                  {UNCREDITED_TITLES.map((t) => (
+                    <li key={t.name}>
+                      <small>{t.name} · {t.year} (uncredited)</small>
                     </li>
                   ))}
                 </ul>
@@ -538,6 +544,16 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Pull quote */}
+      <div className="pull rev">
+        <div className="shell">
+          <blockquote className="pull-q">
+            <span className="quotemark">&ldquo;</span>Collect <span className="hl">moments</span>, not things.
+          </blockquote>
+          <div className="pull-sig">Words I live by</div>
+        </div>
+      </div>
+
       {/* § 04 Playground */}
       <section className="s rev" id="playground">
         <div className="shell">
@@ -556,7 +572,7 @@ export default function Home() {
               </div>
               <div className="pcard-body">
                 <div className="pcard-kind">
-                  <span className="pip" />AI Tool · TOOL · 01
+                  <span className="pip" />Data Tool · TOOL · 01
                 </div>
                 <h3 className="pcard-name">
                   Purchasing <span className="it">Power</span>

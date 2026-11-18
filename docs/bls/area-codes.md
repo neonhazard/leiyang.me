@@ -1,6 +1,5 @@
 # BLS Area Codes Documentation
 
-<!-- Add your BLS metropolitan area codes documentation here -->
 
 area_code	area_name	display_level	selectable	sort_sequence
 0000	U.S. city average	0	T	1

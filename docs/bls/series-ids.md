@@ -1,6 +1,5 @@
 # BLS Series IDs Documentation
 
-<!-- Add your BLS series ID format documentation here -->
 Consumer Price Index - All Urban Consumers
 Survey Overview The following is a sample format description of the Consumer Price Index - All Urban Consumers series identifier:
 

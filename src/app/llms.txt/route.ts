@@ -6,6 +6,7 @@ import {
   PERSON_LOCALITY,
   CURRENT_ROLE,
   SHIPPED_TITLES,
+  UNCREDITED_TITLES,
   SAME_AS,
 } from "@/constants/site";
 
@@ -25,7 +26,7 @@ export function GET() {
 - Name: ${PERSON_NAME}
 - Role: ${CURRENT_ROLE.title}
 - Employer: ${current} (since ${CURRENT_ROLE.since})
-- Previously: Lead AI Animator at Infinity Ward (Activision), 2021–2025, on Call of Duty: Modern Warfare II and Modern Warfare III — owned animation systems for all soldier and civilian NPCs, redesigned the AI combat and reaction loop, directed mocap shoots, led a team of 5 animators across Los Angeles and Poland
+- Previously: Lead AI Animator at Infinity Ward (Activision), 2021–2025, on Call of Duty: Modern Warfare II, Modern Warfare III, and Modern Warfare 4 — owned animation systems for all soldier and civilian NPCs, redesigned the AI combat and reaction loop, directed mocap shoots, led a team of 5 animators across Los Angeles and Poland
 - Earlier: Senior Animator at Infinity Ward, 2004–2015 — AI, cinematic, and vehicle animation; led the animation of Riley the dog (Call of Duty: Ghosts); snowmobile animation (Modern Warfare 2); the level "The Coup" (Call of Duty 4: Modern Warfare); the Pointe du Hoc beach assault for the Call of Duty 2 E3 showcase
 - Also: Contract Lead Animator at Rogue Initiative Studio (2019–2021), co-founder of Superfine Games (2017–2019), VFX supervisor on the film "Guns and Kidneys" (2016–2017)
 - Specialties: gameplay animation, NPC animation systems, motion capture direction, rigging, animation pipelines, AI-assisted animation tools
@@ -36,6 +37,9 @@ export function GET() {
 ## Shipped Call of Duty titles
 
 ${SHIPPED_TITLES.map((t) => `- ${t.name} (${t.year})`).join("\n")}
+
+Also worked on (uncredited):
+${UNCREDITED_TITLES.map((t) => `- ${t.name} (${t.year})`).join("\n")}
 
 ## Pages
 

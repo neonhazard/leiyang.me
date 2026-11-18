@@ -7,6 +7,7 @@ import {
   PROFILE_URLS,
   CURRENT_ROLE,
   SHIPPED_TITLES,
+  UNCREDITED_TITLES,
   socialMetadata,
 } from "@/constants/site";
 
@@ -193,7 +194,11 @@ export default function Resume() {
                 title="LEAD AI ANIMATOR"
                 company="INFINITY WARD, WOODLAND HILLS, CALIFORNIA"
                 period="2021 – 2025"
-                projects={["CALL OF DUTY: MODERN WARFARE II", "CALL OF DUTY: MODERN WARFARE III"]}
+                projects={[
+                  "CALL OF DUTY: MODERN WARFARE II",
+                  "CALL OF DUTY: MODERN WARFARE III",
+                  ...UNCREDITED_TITLES.map((t) => `${t.name.toUpperCase()} (UNCREDITED)`),
+                ]}
                 bullets={[
                   "Directed animation pipelines for gameplay NPC behaviors to meet AAA quality standards",
                   "Supervised and developed a team of 5 animators (3 in Los Angeles, 2 in Poland), elevating artistic quality and technical efficiency",

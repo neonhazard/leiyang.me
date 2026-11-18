@@ -18,9 +18,9 @@ export const PERSON_SUMMARY =
 export const CURRENT_ROLE = {
   org: "Tencent",
   orgUrl: "https://en.wikipedia.org/wiki/Tencent",
-  studio: "",
+  studio: "Lightspeed Studios",
   title: PERSON_JOB_TITLE,
-  since: "2025",
+  since: "2026",
 };
 
 export const PAST_EMPLOYERS = [
@@ -42,16 +42,21 @@ export const SHIPPED_TITLES = [
   { name: "Call of Duty: Modern Warfare III", year: 2023, wiki: "Call_of_Duty:_Modern_Warfare_III" },
 ].map((t) => ({ ...t, url: `https://en.wikipedia.org/wiki/${t.wiki}` }));
 
+// Titles Lei worked on but isn't in the shipped credits for. Shown on visible
+// pages with an "(uncredited)" tag; kept out of structured data on purpose.
+export const UNCREDITED_TITLES = [
+  { name: "Call of Duty: Modern Warfare 4", year: 2026 },
+];
+
 // Public profiles linked via Person schema `sameAs` — the strongest signal for
 // Google to recognize Lei Yang as a distinct entity. Replace REPLACE_ME with the
 // real profile URLs; entries still containing REPLACE_ME are omitted automatically.
-// Worth adding when they exist: IMDb (Call of Duty credits are listed there),
-// ArtStation, and a Wikidata item.
+// Pending: IMDb (credit submitted, awaiting approval), then a Wikidata item
+// that cites IMDb and MobyGames.
 export const PROFILE_URLS = {
   linkedin: "https://www.linkedin.com/in/lei-yang/",
   mobygames: "https://www.mobygames.com/person/205426/lei-yang/",
   imdb: "REPLACE_ME",
-  artstation: "REPLACE_ME",
   wikidata: "REPLACE_ME",
 };
 

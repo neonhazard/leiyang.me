@@ -43,7 +43,7 @@ export default function Tools() {
             The <span style={{ fontFamily: "var(--font-bodoni), serif", fontStyle: "italic", color: "var(--accent)" }}>playground</span>
           </h1>
           <p style={{ color: "var(--muted)", fontSize: 18, fontWeight: 300, maxWidth: 480 }}>
-            Personal tools and AI-powered solutions I&apos;ve built.
+            Personal tools and games I&apos;ve built.
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export default function Tools() {
             </div>
             <div className="pcard-body">
               <div className="pcard-kind">
-                <span className="pip" />AI Tool · TOOL · 01
+                <span className="pip" />Data Tool · TOOL · 01
               </div>
               <h3 className="pcard-name">
                 Purchasing <span className="it">Power</span>
